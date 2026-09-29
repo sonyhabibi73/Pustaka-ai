@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import { cloneElement, isValidElement, type ReactElement } from "react";
 import type { ButtonHTMLAttributes } from "react";
 
 import { cn } from "@/lib/utils";
@@ -25,11 +26,32 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {}
+  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  /**
+   * Terapkan gaya button ke child (biasanya <Link>) tanpa elemen pembungkus,
+   * supaya tautan tetap jadi tautan untuk screen reader dan klik tengah.
+   */
+  asChild?: boolean;
+}
 
-export function Button({ className, variant, size, type = "button", ...props }: ButtonProps) {
+export function Button({
+  asChild,
+  className,
+  variant,
+  size,
+  type = "button",
+  children,
+  ...props
+}: ButtonProps) {
+  const classes = cn(buttonVariants({ variant, size }), className);
+  if (asChild && isValidElement(children)) {
+    const child = children as ReactElement<{ className?: string }>;
+    return cloneElement(child, { className: cn(classes, child.props.className) });
+  }
   return (
-    <button className={cn(buttonVariants({ variant, size }), className)} type={type} {...props} />
+    <button className={classes} type={type} {...props}>
+      {children}
+    </button>
   );
 }
 

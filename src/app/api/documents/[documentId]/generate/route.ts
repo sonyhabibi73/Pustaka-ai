@@ -22,7 +22,10 @@ export async function POST(_: Request, { params }: { params: Promise<{ documentI
     const context = chunks
       .map((chunk) => `[chunk ${chunk.chunkIndex}] ${chunk.content}`)
       .join("\n\n");
-    const [cards, questions] = await Promise.all([createFlashcards(context), createQuiz(context)]);
+    const [cards, questions] = await Promise.all([
+      createFlashcards(context, document.title),
+      createQuiz(context, document.title),
+    ]);
     const byIndex = new Map(chunks.map((chunk) => [chunk.chunkIndex, chunk.id]));
     await prisma.$transaction(async (tx) => {
       await tx.flashcard.deleteMany({ where: { documentId } });

@@ -1,9 +1,18 @@
 import Link from "next/link";
-import { BookOpenCheck, LayoutDashboard, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { signOut } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { SideNav } from "@/components/layout/side-nav";
 
-export function AppShell({ children, userName }: { children: React.ReactNode; userName: string }) {
+export function AppShell({
+  children,
+  userName,
+  dueCount = 0,
+}: {
+  children: React.ReactNode;
+  userName: string;
+  dueCount?: number;
+}) {
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[15rem_1fr]">
       <aside className="border-border bg-card border-b lg:min-h-dvh lg:border-r lg:border-b-0">
@@ -17,20 +26,7 @@ export function AppShell({ children, userName }: { children: React.ReactNode; us
           className="flex gap-1 overflow-x-auto px-3 pb-3 lg:block lg:px-3 lg:py-8"
           aria-label="Navigasi utama"
         >
-          <Link
-            className="bg-secondary inline-flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium lg:w-full"
-            href="/dashboard"
-          >
-            <LayoutDashboard className="size-4" aria-hidden="true" />
-            Workspace
-          </Link>
-          <Link
-            className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex h-11 items-center gap-3 rounded-md px-3 text-sm lg:mt-1 lg:w-full"
-            href="/dashboard#materi"
-          >
-            <BookOpenCheck className="size-4" aria-hidden="true" />
-            Materi
-          </Link>
+          <SideNav dueCount={dueCount} />
         </nav>
         <div className="border-border hidden border-t p-3 lg:block">
           <p className="text-muted-foreground truncate px-3 py-2 text-sm">{userName}</p>

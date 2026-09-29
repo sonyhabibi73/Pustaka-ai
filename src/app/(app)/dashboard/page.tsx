@@ -6,8 +6,10 @@ import { prisma } from "@/lib/db";
 import { AppShell } from "@/components/layout/app-shell";
 import { UploadForm } from "@/components/documents/upload-form";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
+import { documentStatusLabel } from "@/lib/documents/labels";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -22,7 +24,7 @@ export default async function DashboardPage() {
     prisma.flashcard.count({ where: { userId: session.user.id, dueAt: { lte: new Date() } } }),
   ]);
   return (
-    <AppShell userName={session.user.name ?? session.user.email ?? "Pengguna"}>
+    <AppShell dueCount={dueCards} userName={session.user.name ?? session.user.email ?? "Pengguna"}>
       <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
         <header className="mb-10">
           <p className="text-muted-foreground font-mono text-xs font-semibold tracking-[0.14em]">
@@ -63,7 +65,7 @@ export default async function DashboardPage() {
                                 : "text-muted-foreground"
                             }
                           >
-                            {document.status}
+                            {documentStatusLabel(document.status)}
                           </Badge>
                         </Link>
                       </li>
@@ -98,6 +100,9 @@ export default async function DashboardPage() {
                 <Sparkles className="size-4" aria-hidden="true" />
                 <p className="mt-4 text-2xl font-semibold tabular-nums">{dueCards}</p>
                 <p className="text-muted-foreground text-sm">flashcard perlu diulang hari ini</p>
+                <Button asChild className="mt-4 w-full" size="sm" variant="outline">
+                  <Link href="/belajar">{dueCards ? "Mulai ulangian" : "Buka ulangian"}</Link>
+                </Button>
               </CardContent>
             </Card>
           </aside>

@@ -94,9 +94,9 @@ export async function processDocument(documentId: string) {
         .map((chunk) => `[chunk ${chunk.chunkIndex}] ${chunk.content}`)
         .join("\n\n");
       const [summary, cards, questions] = await Promise.all([
-        summarizeDocument(text),
-        createFlashcards(context),
-        createQuiz(context),
+        summarizeDocument(text, document.title),
+        createFlashcards(context, document.title),
+        createQuiz(context, document.title),
       ]);
       const byIndex = new Map(savedChunks.map((chunk) => [chunk.chunkIndex, chunk.id]));
       await prisma.$transaction(async (tx) => {

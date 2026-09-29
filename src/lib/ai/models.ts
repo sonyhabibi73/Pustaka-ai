@@ -1,7 +1,9 @@
 import "server-only";
 import { google } from "@ai-sdk/google";
 
-export const generationModel = google("gemini-3.5-flash-lite");
+export const GENERATION_MODEL_ID = "gemini-3.5-flash-lite";
+
+export const generationModel = google(GENERATION_MODEL_ID);
 
 export const embeddingModel = google.embedding("gemini-embedding-001");
 

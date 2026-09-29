@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+build
+src/generated
+coverage
+playwright-report
+test-results
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+.env.local.bak
+*.bak
+!.env.example
+.neon

@@ -1,8 +1,37 @@
 @import "tailwindcss";
 
+/* Mode gelap diatur lewat atribut data-theme (lihat theme-init + ThemeToggle),
+   bukan class "dark" bawaan Tailwind. */
+@custom-variant dark (&:where([data-theme="dark"]));
+
 @theme inline {
-  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  /* ── Skala tipografi fluid (Desain.md §3.2) ── */
+  --text-display: clamp(2.5rem, 6vw, 4rem);
+  --text-display--line-height: 1.05;
+  --text-display--font-weight: 800;
+  --text-display--letter-spacing: -0.03em;
+  --text-h1: clamp(2rem, 4.5vw, 2.75rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--font-weight: 800;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: clamp(1.5rem, 3vw, 2rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--font-weight: 700;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--font-weight: 700;
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+
+  /* ── Token semantik (dipakai seluruh kode lewat utilitas Tailwind) ── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -20,51 +49,377 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius: 0.625rem;
+
+  /* ── Token spesifik "Ruang Belajar Stabilo" ── */
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-press: var(--brand-press);
+  --color-mint: var(--mint);
+  --color-highlight: var(--highlight);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+
+  /* ── Radius (skala desain: 8 / 14 / 22 / pill) ── */
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* ── Bayangan keras khas stiker ── */
+  --shadow-1: 2px 2px 0 var(--ink);
+  --shadow-2: 4px 4px 0 var(--ink);
+  --shadow-3: 8px 8px 0 var(--ink);
+
+  /* ── Motion ── */
+  --ease-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 :root {
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.967 0 0);
-  --muted-foreground: oklch(0.48 0 0);
-  --accent: oklch(0.63 0.19 43);
-  --accent-foreground: oklch(0.18 0 0);
-  --destructive: oklch(0.58 0.22 27);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.89 0 0);
-  --input: oklch(0.89 0 0);
-  --ring: oklch(0.45 0 0);
+  /* warna — mode terang (sesuai Desain.md §3.1) */
+  --ink: #14172b;
+  --paper: #fbf9f4;
+  --surface: #ffffff;
+  --line: #e6e3da;
+  --brand: #3347f0;
+  --brand-press: #2434c4;
+  --mint: #1fb889;
+  --highlight: #ffd84d;
+  --danger: #d92d3a;
+  --warning: #b76e00;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --primary: var(--brand);
+  --primary-foreground: #ffffff;
+  --secondary: #fff0bc;
+  --secondary-foreground: var(--ink);
+  --muted: #f2efe7;
+  --muted-foreground: #5f6480;
+  --accent: var(--highlight);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--brand);
+
+  /* spasi: kelipatan 4 (Desain.md §3.3) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-24: 96px;
+
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-pill: 999px;
+
+  --shadow-1: 2px 2px 0 var(--ink);
+  --shadow-2: 4px 4px 0 var(--ink);
+  --shadow-3: 8px 8px 0 var(--ink);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-fast: 120ms;
+  --t-base: 200ms;
+  --t-slow: 360ms;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --ink: #f2f3fa;
+  --paper: #0e1020;
+  --surface: #171a30;
+  --line: #2a2e4a;
+  --brand: #7c8cff;
+  --brand-press: #9aa6ff;
+  --mint: #3ddca8;
+  --highlight: #ffd84d;
+  --danger: #ff6b75;
+  --warning: #f5b544;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --primary: var(--brand);
+  --primary-foreground: #0e1020;
+  --secondary: #4a4119;
+  --secondary-foreground: #ffe68a;
+  --muted: #1d2138;
+  --muted-foreground: #a3a8c7;
+  --accent: var(--highlight);
+  --accent-foreground: #14172b;
+  --destructive: var(--danger);
+  --destructive-foreground: #14172b;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--brand);
+
+  color-scheme: dark;
 }
 
 * {
   border-color: var(--border);
 }
+
 html {
   scroll-behavior: smooth;
 }
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
 }
+
 ::selection {
-  background: color-mix(in oklab, var(--accent) 30%, white);
+  background: color-mix(in oklab, var(--highlight) 55%, transparent);
+  color: var(--ink);
 }
+
+/* Fokus selalu terlihat (Desain.md §7) */
+:focus-visible {
+  outline: 3px solid color-mix(in oklab, var(--brand) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* ── Elemen signature ── */
+
+/* 1. Garis stabilo di bawah kata kunci */
+.hl {
+  background: linear-gradient(transparent 58%, var(--highlight) 58% 92%, transparent 92%);
+  padding: 0 0.1em;
+}
+
+:root[data-theme="dark"] .hl {
+  background: linear-gradient(
+    transparent 58%,
+    color-mix(in oklab, var(--highlight) 45%, transparent) 58% 92%,
+    transparent 92%
+  );
+}
+
+/* 2. Kartu stiker: border tinta + bayangan keras */
+.sticker {
+  border: 2px solid var(--ink);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-2);
+  background: var(--surface);
+}
+
+.sticker-1 {
+  border: 2px solid var(--ink);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-1);
+  background: var(--surface);
+}
+
+.lift {
+  transition:
+    transform var(--t-base) var(--ease),
+    box-shadow var(--t-base) var(--ease);
+}
+
+.lift:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-3);
+}
+
+.lift:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+/* 3. Tepi kertas sobek: pembatas antar section */
+.torn {
+  height: 16px;
+  background-color: var(--background);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='16' viewBox='0 0 48 16'%3E%3Cpath d='M0 8 Q6 2 12 8 T24 8 T36 8 T48 8 L48 16 L0 16 Z' fill='%23000'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='16' viewBox='0 0 48 16'%3E%3Cpath d='M0 8 Q6 2 12 8 T24 8 T36 8 T48 8 L48 16 L0 16 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-size: 48px 16px;
+  mask-size: 48px 16px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+/* 4. Sticky-note (dinding testimoni & empati) */
+.sticky-note {
+  border: 2px solid var(--ink);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-2);
+}
+
+/* Tautan "Lewati ke konten utama": tersembunyi sampai difokuskan */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  transform: translateY(-160%);
+  border: 2px solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--highlight);
+  color: #14172b;
+  padding: 10px 20px;
+  font-weight: 700;
+  transition: transform var(--t-base) var(--ease);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Angka & label mono dipakai untuk timer/progres (Desain.md §3.2) */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Korak pembalik kartu flashcard (Desain.md §6.6) */
+.flip-scene {
+  position: relative;
+  perspective: 1400px;
+}
+
+.flip-inner {
+  position: absolute;
+  inset: 0;
+  transition: transform 360ms var(--ease);
+  transform-style: preserve-3d;
+}
+
+.flip-inner[data-flipped="true"] {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 2px solid var(--ink);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+  padding: 24px;
+}
+
+.flip-face[data-back="true"] {
+  transform: rotateY(180deg);
+}
+
+/* Indikator "mengetik" di chat (Desain.md §6.8) */
+.typing-dot {
+  animation: typing 1.1s var(--ease) infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Mini-demo di beranda: dots muncul dulu, jawaban menyusul (CSS murni). */
+.chat-typing {
+  display: inline-flex;
+  gap: 3px;
+  animation: chat-hide 0s linear 1.6s both;
+}
+
+.chat-answer {
+  animation: chat-show 160ms var(--ease) 1.6s both;
+}
+
+@keyframes chat-hide {
+  from {
+    visibility: visible;
+  }
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes chat-show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* Marquee dimatikan total: elemen bukti sosial & testimoni harus statis.
+   Aturan ini menjamin tidak ada gerakan otomatis yang tersisa. */
+.marquee,
+[data-marquee] {
+  animation: none !important;
+  transform: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
+
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .flip-inner[data-flipped="true"] {
+    transform: none;
+  }
+
+  .flip-face[data-back="true"] {
+    transform: none;
+    opacity: 0;
+  }
+
+  .flip-inner[data-flipped="true"] .flip-face[data-front="true"] {
+    opacity: 0;
+  }
+
+  .flip-inner[data-flipped="true"] .flip-face[data-back="true"] {
+    opacity: 1;
+  }
+
+  .lift:hover {
+    transform: none;
   }
 }

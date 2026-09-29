@@ -1,7 +1,8 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { ArrowUp, LoaderCircle, Quote } from "lucide-react";
+import { ArrowUp, Quote, Square } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Markdown } from "@/components/ui/markdown";
 
@@ -15,7 +16,8 @@ export type ChatMessage = {
 export const DEFAULT_SUGGESTIONS = [
   "Ringkas poin penting materi ini dalam 5 kalimat",
   "Apa istilah penting yang wajib aku pahami?",
-  "Buat 5 pertanyaan pemantik dari materi ini",
+  "Jelaskan lebih sederhana",
+  "Beri contoh soal dari materi ini",
 ];
 
 /** Baris `SUMBER:` dari model adalah metadata, bukan jawaban — jangan ditampilkan. */
@@ -35,6 +37,11 @@ type StreamMeta = {
   error?: string;
 };
 
+/**
+ * §6.8 — Gelembung pengguna --brand, gelembung AI --surface berborder,
+ * chip saran, indikator mengetik tiga titik, dan tombol "Hentikan"
+ * selama jawaban masih dihasilkan.
+ */
 export function ChatPanel({
   documentId,
   documentTitle,
@@ -55,6 +62,7 @@ export function ChatPanel({
   const [openCitation, setOpenCitation] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -68,11 +76,14 @@ export function ChatPanel({
       { role: "assistant", content: "" },
     ]);
     setLoading(true);
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       const response = await fetch(`/api/documents/${documentId}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: question, threadId }),
+        signal: controller.signal,
       });
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -111,7 +122,7 @@ export function ChatPanel({
           setMessages((current) => replaceLast(current, { role: "assistant", content }));
         }
         if (separator >= 0 && !meta) {
-          meta = JSON.parse(accumulated.slice(separator + 1)) as StreamMeta;
+          meta = JSON.parse(accumulated.slice(separator + 8)) as StreamMeta;
         }
       }
       if (meta?.error) throw new Error(meta.error);
@@ -124,12 +135,18 @@ export function ChatPanel({
         }),
       );
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Jawaban tidak dapat dibuat.");
-      setMessages((current) => {
-        const last = current[current.length - 1];
-        return last?.role === "assistant" && !last.content ? current.slice(0, -1) : current;
-      });
+      if (caught instanceof DOMException && caught.name === "AbortError") {
+        // Dihentikan pengguna: bagian jawaban yang sudah masuk tetap ditampilkan.
+        setError("");
+      } else {
+        setError(caught instanceof Error ? caught.message : "Jawaban tidak dapat dibuat.");
+        setMessages((current) => {
+          const last = current[current.length - 1];
+          return last?.role === "assistant" && !last.content ? current.slice(0, -1) : current;
+        });
+      }
     } finally {
+      abortRef.current = null;
       setLoading(false);
       setStreaming(false);
       inputRef.current?.focus();
@@ -150,10 +167,15 @@ export function ChatPanel({
   return (
     <section
       aria-label="Tanya materi"
-      className="border-border bg-card flex h-[min(70vh,44rem)] flex-col border"
+      className="border-ink bg-card shadow-2 flex h-[min(70vh,44rem)] flex-col rounded-md border-2"
     >
-      <header className="border-border border-b p-5">
-        <h2 className="font-semibold">Tanya materi</h2>
+      <header className="border-line border-b-2 p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-bold">Tanya materi</h2>
+          <span className="text-muted-foreground font-mono text-[11px] font-semibold tracking-[0.14em] uppercase">
+            Tutor AI
+          </span>
+        </div>
         <p className="text-muted-foreground mt-1 text-sm">
           {documentTitle
             ? `Jawaban disusun dari “${documentTitle}”. Klik sumber untuk membaca kutipannya.`
@@ -161,7 +183,7 @@ export function ChatPanel({
         </p>
       </header>
 
-      <div aria-live="polite" className="flex-1 space-y-6 overflow-y-auto p-5">
+      <div aria-live="polite" className="flex-1 space-y-5 overflow-y-auto p-5">
         {showSuggestions ? (
           <div className="space-y-3">
             <p className="text-muted-foreground text-sm">
@@ -170,7 +192,7 @@ export function ChatPanel({
             <div className="flex flex-wrap gap-2">
               {DEFAULT_SUGGESTIONS.map((suggestion) => (
                 <button
-                  className="border-border hover:bg-secondary min-h-10 rounded-full border px-4 text-left text-sm transition-colors disabled:opacity-50"
+                  className="border-ink bg-background rounded-pill shadow-1 ease-snappy hover:shadow-2 min-h-10 border-2 px-4 text-left text-sm font-semibold transition-transform duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 disabled:opacity-50"
                   disabled={busy}
                   key={suggestion}
                   onClick={() => void ask(suggestion)}
@@ -188,7 +210,7 @@ export function ChatPanel({
           if (message.role === "user") {
             return (
               <article
-                className="bg-secondary ml-auto max-w-[85%] p-3 text-sm leading-6"
+                className="bg-primary text-primary-foreground ml-auto max-w-[85%] rounded-md rounded-br-sm px-4 py-3 text-sm leading-relaxed"
                 key={`user-${index}`}
               >
                 <p className="whitespace-pre-wrap">{message.content}</p>
@@ -199,16 +221,27 @@ export function ChatPanel({
           if (streamingThis) {
             return (
               <div
-                className="text-muted-foreground flex items-center gap-2 text-sm"
+                className="bg-surface border-ink inline-flex max-w-[85%] items-center gap-1.5 rounded-md rounded-bl-sm border-2 px-4 py-4"
                 key={`loading-${index}`}
               >
-                <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
-                Menyusun jawaban dari dokumen…
+                <span className="typing-dot text-brand" aria-hidden="true">
+                  ●
+                </span>
+                <span className="typing-dot text-brand" aria-hidden="true">
+                  ●
+                </span>
+                <span className="typing-dot text-brand" aria-hidden="true">
+                  ●
+                </span>
+                <span className="sr-only">Menyusun jawaban dari dokumen…</span>
               </div>
             );
           }
           return (
-            <article className="max-w-[92%] text-sm" key={`assistant-${index}`}>
+            <article
+              className="bg-surface border-ink shadow-1 max-w-[92%] rounded-md rounded-bl-sm border-2 px-4 py-3 text-sm"
+              key={`assistant-${index}`}
+            >
               <Markdown markdown={message.content} />
               {streaming && isLast ? (
                 <span
@@ -224,7 +257,7 @@ export function ChatPanel({
                     return (
                       <button
                         aria-expanded={open}
-                        className="border-border text-muted-foreground hover:text-foreground inline-flex min-h-8 items-center gap-1.5 rounded-full border px-3 text-xs transition-colors"
+                        className="border-ink text-muted-foreground hover:text-foreground rounded-pill bg-background inline-flex min-h-8 items-center gap-1.5 border-2 px-3 text-xs font-semibold transition-colors"
                         key={key}
                         onClick={() => setOpenCitation(open ? "" : key)}
                         type="button"
@@ -240,7 +273,7 @@ export function ChatPanel({
                 (citation) =>
                   citation.excerpt && openCitation === `${index}-${citation.chunkIndex}`,
               ) ? (
-                <blockquote className="border-border bg-muted mt-2 border-l-2 p-3 text-xs leading-6">
+                <blockquote className="border-highlight bg-muted mt-2 border-l-[5px] p-3 text-xs leading-6">
                   {
                     message.citations.find(
                       (citation) => openCitation === `${index}-${citation.chunkIndex}`,
@@ -254,30 +287,44 @@ export function ChatPanel({
         <div ref={endRef} />
       </div>
 
-      <form className="border-border border-t p-3" onSubmit={submit}>
+      <form className="border-line border-t-2 p-3" onSubmit={submit}>
         <label className="sr-only" htmlFor="chat-input">
           Pertanyaan tentang materi
         </label>
         <div className="flex gap-2">
           <input
-            className="placeholder:text-muted-foreground h-11 min-w-0 flex-1 bg-transparent px-3 text-base outline-none md:text-sm"
+            className="border-input placeholder:text-muted-foreground focus-visible:border-brand bg-surface focus-visible:ring-brand/40 h-12 min-w-0 flex-1 rounded-sm border-2 px-3.5 text-base outline-none focus-visible:ring-4 md:text-sm"
             id="chat-input"
             onChange={(event) => setInput(event.target.value)}
             placeholder="Tanyakan materi ini…"
             ref={inputRef}
             value={input}
           />
-          <Button
-            aria-label="Kirim pertanyaan"
-            disabled={busy || !input.trim()}
-            size="icon"
-            type="submit"
-          >
-            <ArrowUp className="size-4" aria-hidden="true" />
-          </Button>
+          {busy ? (
+            <Button
+              aria-label="Hentikan jawaban"
+              onClick={() => abortRef.current?.abort()}
+              variant="secondary"
+              type="button"
+              className="shrink-0"
+            >
+              <Square className="size-4" aria-hidden="true" />
+              Hentikan
+            </Button>
+          ) : (
+            <Button
+              aria-label="Kirim pertanyaan"
+              disabled={!input.trim()}
+              size="icon"
+              type="submit"
+              className="shrink-0"
+            >
+              <ArrowUp className="size-4" aria-hidden="true" />
+            </Button>
+          )}
         </div>
         {error ? (
-          <p className="text-destructive px-3 pb-1 text-sm" role="alert">
+          <p className="text-destructive mt-2 px-1 text-sm font-semibold" role="alert">
             {error}
           </p>
         ) : null}

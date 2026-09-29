@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowLeft, Layers3, RotateCcw } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { calculateNextReview, type ReviewGrade } from "@/lib/study/spaced-repetition";
 import { intervalLabel } from "@/lib/documents/labels";
 
@@ -18,16 +20,22 @@ export type StudyCard = {
   docTitle?: string;
 };
 
+/**
+ * §6.6 — Rasio 3:2, balik 3D 360ms (mati pada prefers-reduced-motion → fade),
+ * kontrol penilaian + pintasan keyboard (spasi membalik, 1–4 menilai).
+ * Empat tingkat penilaian dipertahankan karena skema & API spaced repetition
+ * memakai AGAIN / HARD / GOOD / EASY.
+ */
 const GRADES: {
   grade: ReviewGrade;
   label: string;
   meaning: string;
   key: string;
 }[] = [
-  { grade: "AGAIN", label: "Ulang", meaning: "belum hafal", key: "1" },
+  { grade: "AGAIN", label: "Belum hafal", meaning: "ulang segera", key: "1" },
   { grade: "HARD", label: "Sulit", meaning: "terngat-ngat", key: "2" },
-  { grade: "GOOD", label: "Paham", meaning: "ingat", key: "3" },
-  { grade: "EASY", label: "Mudah", meaning: "hafal", key: "4" },
+  { grade: "GOOD", label: "Hampir", meaning: "ingat sebagian", key: "3" },
+  { grade: "EASY", label: "Hafal", meaning: "tuntas", key: "4" },
 ];
 
 const EMPTY_TALLY: Record<ReviewGrade, number> = { AGAIN: 0, HARD: 0, GOOD: 0, EASY: 0 };
@@ -116,41 +124,45 @@ export function FlashcardStudy({
 
   if (!cards.length) {
     return (
-      <div className="border-border bg-card rounded-lg border p-10 text-center">
-        <Sparkles className="text-muted-foreground mx-auto size-6" aria-hidden="true" />
-        <p className="mt-4 font-medium">{emptyNotice?.title ?? "Belum ada flashcard."}</p>
-        <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm leading-6">
-          {emptyNotice?.body ?? "Flashcard dibuat otomatis setelah materi selesai diproses."}
-        </p>
-        <Button asChild className="mt-6" variant="outline">
-          <Link href={backHref}>
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            Kembali
-          </Link>
-        </Button>
-      </div>
+      <EmptyState
+        icon={Layers3}
+        title={emptyNotice?.title ?? "Belum ada flashcard."}
+        description={
+          emptyNotice?.body ?? "Flashcard dibuat otomatis setelah materi selesai diproses."
+        }
+        action={
+          <Button asChild variant="secondary">
+            <Link href={backHref}>
+              <ArrowLeft className="size-4" aria-hidden="true" />
+              Kembali
+            </Link>
+          </Button>
+        }
+      />
     );
   }
 
   if (finished) {
     const retried = requeue.length;
     return (
-      <div className="border-border bg-card rounded-lg border p-8 text-center sm:p-10">
+      <div className="border-ink bg-card shadow-2 rounded-md border-2 p-8 text-center sm:p-10">
         <p className="font-mono text-xs font-semibold tracking-[0.14em] uppercase">Sesi selesai</p>
-        <p className="mt-4 text-3xl font-semibold tracking-[-0.04em] tabular-nums">
-          {reviewed} kartu
-        </p>
-        <div className="mx-auto mt-6 grid max-w-lg grid-cols-4 gap-2">
+        <p className="mt-4 font-mono text-4xl font-bold tabular-nums">{reviewed} kartu</p>
+        <div className="mx-auto mt-7 grid max-w-lg grid-cols-2 gap-3 sm:grid-cols-4">
           {GRADES.map((item) => (
-            <div className="border-border rounded-md border py-3" key={item.grade}>
-              <p className="text-xl font-semibold tabular-nums">{tally[item.grade]}</p>
-              <p className="text-muted-foreground mt-0.5 text-xs">{item.label}</p>
+            <div
+              className="border-ink bg-background shadow-1 rounded-md border-2 py-3"
+              key={item.grade}
+            >
+              <p className="font-mono text-2xl font-bold tabular-nums">{tally[item.grade]}</p>
+              <p className="text-muted-foreground mt-0.5 text-xs font-semibold">{item.label}</p>
             </div>
           ))}
         </div>
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           {retried ? (
             <Button
+              variant="accent"
               onClick={() => {
                 setQueue(requeue);
                 setRequeue([]);
@@ -164,58 +176,45 @@ export function FlashcardStudy({
               Latih ulang {retried} kartu yang belum hafal
             </Button>
           ) : null}
-          <Button asChild variant="outline">
+          <Button asChild variant="secondary">
             <Link href={backHref}>
               <ArrowLeft className="size-4" aria-hidden="true" />
               Kembali
             </Link>
           </Button>
         </div>
-        <p className="text-muted-foreground mt-6 text-sm">
-          Kartu yang dinilai sudah dijadwalkan ulang sesuai jadwal belajar berikutnya.
+        <p className="text-muted-foreground mx-auto mt-6 max-w-md text-sm leading-relaxed">
+          Kartu yang dinilai sudah dijadwalkan ulang sesuai jawaban jujurmu tadi.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <p className="text-muted-foreground font-mono text-xs tabular-nums">
+        <p className="font-mono text-xs font-bold tabular-nums">
           {reviewed + 1} / {total}
         </p>
         <div
           aria-hidden="true"
-          className="bg-border h-1.5 flex-1 overflow-hidden rounded-full"
+          className="border-line bg-muted rounded-pill h-3 flex-1 overflow-hidden border-2"
           role="presentation"
         >
           <div
-            className="bg-foreground h-full rounded-full transition-[width] duration-300"
+            className="bg-mint ease-snappy h-full transition-[width] duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-muted-foreground font-mono text-xs tabular-nums">{progress}%</p>
+        <p className="font-mono text-xs font-bold tabular-nums">{progress}%</p>
       </div>
 
-      <div className="[perspective:1600px]">
-        <div
-          className="grid transition-transform duration-500 ease-out"
-          style={{
-            transform: revealed ? "rotateY(180deg)" : "rotateY(0deg)",
-            transformStyle: "preserve-3d",
-          }}
-        >
+      <div className="flip-scene mx-auto aspect-[3/2] max-h-[26rem] min-h-64 w-full sm:max-h-[30rem]">
+        <div className="flip-inner" data-flipped={revealed ? "true" : "false"}>
           {/* Sisi depan */}
-          <div
-            className="border-border bg-card flex min-h-64 flex-col rounded-lg border p-6 sm:p-8"
-            style={{
-              gridArea: "1 / 1",
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-            }}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-muted-foreground font-mono text-[11px] font-semibold tracking-[0.14em] uppercase">
+          <div className="flip-face" data-front="true">
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-muted-foreground font-mono text-[11px] font-bold tracking-[0.14em] uppercase">
                 Pertanyaan
               </p>
               {card.docTitle ? (
@@ -224,33 +223,26 @@ export function FlashcardStudy({
                 </p>
               ) : null}
             </div>
-            <p className="mt-5 flex-1 text-xl leading-relaxed font-medium sm:text-2xl sm:leading-relaxed">
-              {card.front}
-            </p>
+            <p className="mt-5 text-xl leading-relaxed font-bold sm:text-2xl">{card.front}</p>
             {card.sources.length ? (
-              <p className="text-muted-foreground mt-6 font-mono text-xs">
+              <p className="text-muted-foreground mt-auto pt-6 font-mono text-xs">
                 SUMBER · bagian {card.sources.join(", ")}
               </p>
             ) : null}
           </div>
 
           {/* Sisi belakang */}
-          <div
-            className="border-border bg-card flex min-h-64 flex-col rounded-lg border p-6 sm:p-8"
-            style={{
-              gridArea: "1 / 1",
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              transform: "rotateY(180deg)",
-            }}
-          >
-            <p className="text-muted-foreground font-mono text-[11px] font-semibold tracking-[0.14em] uppercase">
+          <div className="flip-face" data-back="true">
+            <p className="text-muted-foreground font-mono text-[11px] font-bold tracking-[0.14em] uppercase">
               Jawaban
             </p>
-            <p className="text-foreground mt-4 max-h-64 overflow-y-auto text-base leading-7 whitespace-pre-wrap">
+            <p
+              className="mt-4 max-h-52 overflow-y-auto text-base leading-7 whitespace-pre-wrap"
+              aria-live="polite"
+            >
               {card.back}
             </p>
-            <p className="text-muted-foreground border-border mt-auto border-t pt-4 text-sm leading-6">
+            <p className="border-line text-muted-foreground mt-auto border-t-2 pt-4 text-sm leading-relaxed">
               {card.front}
             </p>
           </div>
@@ -261,22 +253,24 @@ export function FlashcardStudy({
         <div className="flex flex-col items-center gap-3">
           <Button className="h-12 px-8 text-base" onClick={() => setRevealed(true)}>
             Balik kartu
-            <kbd className="border-border ml-3 rounded border px-1.5 py-0.5 font-mono text-[11px]">
+            <kbd className="border-ink bg-background text-foreground ml-3 rounded-sm border-2 px-1.5 py-0.5 font-mono text-[11px] font-semibold">
               spasi
             </kbd>
           </Button>
-          <p className="text-muted-foreground text-xs">Ingat dulu jawabannya, lalu balik.</p>
+          <p className="text-muted-foreground text-sm">Ingat dulu jawabannya, lalu balik.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {GRADES.map((option) => {
             const preview = calculateNextReview(card, option.grade).intervalDays;
             const isPreferred = option.grade === "GOOD";
             return (
               <button
                 className={[
-                  "border bg-transparent px-3 py-3 text-left transition-colors disabled:opacity-50",
-                  isPreferred ? "border-foreground" : "border-border hover:bg-secondary",
+                  "border-ink ease-snappy flex flex-col items-start gap-1 rounded-md border-2 px-3.5 py-3 text-left transition-[transform,box-shadow,background-color] duration-150 disabled:opacity-50",
+                  isPreferred
+                    ? "bg-secondary shadow-1"
+                    : "bg-card shadow-1 hover:shadow-2 hover:-translate-x-0.5 hover:-translate-y-0.5",
                 ].join(" ")}
                 disabled={busy}
                 key={option.grade}
@@ -284,14 +278,14 @@ export function FlashcardStudy({
                 title={`Tekan ${option.key}`}
                 type="button"
               >
-                <span className="block text-sm font-medium">
-                  {option.label}
-                  <span className="text-muted-foreground ml-1.5 font-mono text-[11px]">
+                <span className="flex w-full items-center gap-2 text-sm font-bold">
+                  <span className="border-ink bg-highlight text-ink rounded-pill inline-flex size-5 items-center justify-center border-2 font-mono text-[10px]">
                     {option.key}
                   </span>
+                  {option.label}
                 </span>
-                <span className="text-muted-foreground mt-0.5 block text-xs">
-                  {intervalLabel(preview)}
+                <span className="text-muted-foreground font-mono text-[11px]">
+                  {intervalLabel(preview)} · {option.meaning}
                 </span>
               </button>
             );
@@ -300,13 +294,13 @@ export function FlashcardStudy({
       )}
 
       {error ? (
-        <p className="text-destructive text-sm" role="alert">
+        <p className="text-destructive text-sm font-semibold" role="alert">
           {error}
         </p>
       ) : null}
 
       <p className="text-muted-foreground text-center font-mono text-[11px]">
-        spasi = balik · 1–4 = nilai
+        spasi = balik · 1–4 = nilai · jujur saat menilai biar jadwalnya akurat
       </p>
     </div>
   );

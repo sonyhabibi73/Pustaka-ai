@@ -8,7 +8,7 @@ import { sanitizeAiMarkdown } from "@/lib/ai/sanitize";
  */
 export function Markdown({ markdown }: { markdown: string }) {
   return (
-    <div className="prose prose-neutral text-foreground prose-headings:tracking-tight prose-p:leading-7 prose-li:leading-7 max-w-none">
+    <div className="prose prose-neutral dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-7 prose-li:leading-7 prose-a:text-brand prose-a:font-semibold max-w-none">
       <ReactMarkdown remarkPlugins={[remarkGfm]} skipHtml>
         {sanitizeAiMarkdown(markdown)}
       </ReactMarkdown>

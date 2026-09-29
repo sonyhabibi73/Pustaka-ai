@@ -21,7 +21,7 @@ describe("groundedChatPrompt", () => {
   it("commands the exact fallback sentence for unsupported answers", () => {
     const prompt = groundedChatPrompt(base);
     expect(prompt).toContain(`balas persis: "${NOT_FOUND_RESPONSE}"`);
-    expect(NOT_FOUND_RESPONSE).toBe("Informasi tersebut tidak ditemukan dalam dokumen Anda.");
+    expect(NOT_FOUND_RESPONSE).toBe("Informasi tersebut tidak ditemukan dalam dokumen kamu.");
   });
 
   it("invites conclusions drawn from the document instead of refusing them", () => {

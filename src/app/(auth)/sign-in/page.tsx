@@ -1,34 +1,55 @@
 import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
+
 import { signIn } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function SignInPage() {
   return (
-    <main className="grid min-h-dvh place-items-center p-5">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <Link href="/" className="font-bold">
-            pelajari<span className="text-accent">.ai</span>
+    <main id="main-content" className="grid min-h-dvh place-items-center p-5">
+      <div className="w-full max-w-md">
+        <div className="mb-5 flex items-center justify-between">
+          <Link href="/" className="text-lg font-extrabold tracking-tight">
+            pelajari<span className="text-primary">.ai</span>
           </Link>
-          <CardTitle className="mt-10 text-2xl tracking-tight">Masuk untuk mulai belajar</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground mb-6 leading-6">
-            Materi dan riwayat belajar Anda disimpan dalam workspace pribadi.
-          </p>
-          <form
-            action={async () => {
-              "use server";
-              await signIn("google", { redirectTo: "/dashboard" });
-            }}
-          >
-            <Button className="w-full" type="submit">
-              Lanjutkan dengan Google
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          <ThemeToggle />
+        </div>
+
+        <Card>
+          <CardHeader>
+            <span className="border-ink bg-highlight text-ink shadow-1 inline-flex size-11 items-center justify-center rounded-md border-2">
+              <ShieldCheck className="size-6" aria-hidden="true" />
+            </span>
+            <CardTitle className="text-h3 mt-4">Masuk untuk mulai belajar</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground leading-relaxed">
+              Materi dan riwayat belajar kamu disimpan di workspace pribadi. Satu akun untuk
+              ringkasan, flashcard, kuis, dan tutor AI.
+            </p>
+            <form
+              className="mt-6"
+              action={async () => {
+                "use server";
+                await signIn("google", { redirectTo: "/dashboard" });
+              }}
+            >
+              <Button className="w-full" type="submit">
+                Lanjutkan dengan Google
+              </Button>
+            </form>
+            <p className="text-muted-foreground mt-4 text-center text-xs leading-relaxed">
+              Tanpa kartu kredit. Lanjutkan kamu menyetujui ketentuan layanan dan kebijakan privasi.
+            </p>
+          </CardContent>
+        </Card>
+
+        <p className="text-muted-foreground mt-5 text-center text-sm">
+          Belum punya akun? Masuk dulu, akun dibuat otomatis.
+        </p>
+      </div>
     </main>
   );
 }

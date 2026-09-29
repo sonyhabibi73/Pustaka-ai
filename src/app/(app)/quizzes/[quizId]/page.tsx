@@ -28,8 +28,10 @@ export default async function QuizPage({ params }: { params: Promise<{ quizId: s
           <ArrowLeft className="size-4" aria-hidden="true" />
           Kembali ke materi
         </Link>
-        <p className="text-muted-foreground mt-5 font-mono text-xs">KUIS</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">{quiz.title}</h1>
+        <p className="text-muted-foreground mt-5 font-mono text-xs font-semibold tracking-[0.14em] uppercase">
+          Kuis · {quiz.questions.length} soal
+        </p>
+        <h1 className="text-h1 mt-3 font-extrabold">{quiz.title}</h1>
         <QuizClient
           quizId={quiz.id}
           questions={quiz.questions.map((question) => ({

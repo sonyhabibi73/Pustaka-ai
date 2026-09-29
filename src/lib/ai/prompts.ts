@@ -1,4 +1,4 @@
-export const NOT_FOUND_RESPONSE = "Informasi tersebut tidak ditemukan dalam dokumen Anda.";
+export const NOT_FOUND_RESPONSE = "Informasi tersebut tidak ditemukan dalam dokumen kamu.";
 export const SOURCE_MARKER = "SUMBER:";
 
 export type ChatTurn = { role: "user" | "assistant"; content: string };

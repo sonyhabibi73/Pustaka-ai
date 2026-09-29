@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Layers3 } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 type Item = {
   href: string;
   label: string;
@@ -26,19 +28,19 @@ export function SideNav({ dueCount }: { dueCount: number }) {
         return (
           <Link
             aria-current={active ? "page" : undefined}
-            className={[
-              "inline-flex h-11 items-center gap-3 rounded-md px-3 text-sm lg:w-full",
+            className={cn(
+              "rounded-pill inline-flex h-11 shrink-0 items-center gap-3 border-2 px-4 text-sm font-semibold transition-colors duration-150 lg:w-full",
               active
-                ? "bg-secondary font-medium"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-            ].join(" ")}
+                ? "border-ink bg-secondary text-foreground shadow-1"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground border-transparent",
+            )}
             href={item.href}
             key={item.href}
           >
             <Icon className="size-4" aria-hidden="true" />
             {item.label}
             {item.badge ? (
-              <span className="bg-accent text-accent-foreground ml-auto min-w-5 rounded-full px-1.5 py-0.5 text-center font-mono text-[11px] leading-4 tabular-nums">
+              <span className="bg-highlight text-ink border-ink rounded-pill ml-auto min-w-6 border-2 px-1.5 py-0.5 text-center font-mono text-[11px] leading-4 font-bold tabular-nums">
                 {item.badge}
               </span>
             ) : null}

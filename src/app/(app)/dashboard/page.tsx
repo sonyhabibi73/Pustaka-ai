@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FilePlus2, Files, Sparkles } from "lucide-react";
+import { ArrowRight, FilePlus2, Files, Layers3 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -8,6 +8,7 @@ import { UploadForm } from "@/components/documents/upload-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { formatDate } from "@/lib/utils";
 import { documentStatusLabel } from "@/lib/documents/labels";
 
@@ -23,48 +24,44 @@ export default async function DashboardPage() {
     }),
     prisma.flashcard.count({ where: { userId: session.user.id, dueAt: { lte: new Date() } } }),
   ]);
+
   return (
     <AppShell dueCount={dueCards} userName={session.user.name ?? session.user.email ?? "Pengguna"}>
       <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
         <header className="mb-10">
           <p className="text-muted-foreground font-mono text-xs font-semibold tracking-[0.14em]">
-            WORKSPACE
+            WORKSPACE / 01
           </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">
-            Belajar dari sumber yang Anda percaya.
+          <h1 className="text-h1 mt-3 font-extrabold">
+            Belajar dari sumber yang <span className="hl">kamu percaya</span>.
           </h1>
         </header>
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-          <section id="materi">
+
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <section className="min-w-0" id="materi">
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Materi terbaru</CardTitle>
-                  <Files className="text-muted-foreground size-4" aria-hidden="true" />
+                  <Files className="text-muted-foreground size-5" aria-hidden="true" />
                 </div>
               </CardHeader>
               <CardContent>
                 {documents.length ? (
-                  <ul className="divide-border divide-y">
+                  <ul className="divide-line divide-y-2">
                     {documents.map((document) => (
                       <li key={document.id}>
                         <Link
-                          className="hover:bg-muted focus-visible:ring-ring flex items-center justify-between gap-4 py-4 outline-none focus-visible:ring-2"
+                          className="hover:bg-muted focus-visible:ring-ring flex items-center justify-between gap-4 rounded-sm px-2 py-4 outline-none focus-visible:ring-2"
                           href={`/documents/${document.id}`}
                         >
                           <span className="min-w-0">
-                            <span className="block truncate font-medium">{document.title}</span>
+                            <span className="block truncate font-bold">{document.title}</span>
                             <span className="text-muted-foreground mt-1 block font-mono text-xs">
                               {document.kind} · {formatDate(document.updatedAt)}
                             </span>
                           </span>
-                          <Badge
-                            className={
-                              document.status === "READY"
-                                ? "bg-secondary border-transparent"
-                                : "text-muted-foreground"
-                            }
-                          >
+                          <Badge variant={document.status === "READY" ? "highlight" : "muted"}>
                             {documentStatusLabel(document.status)}
                           </Badge>
                         </Link>
@@ -72,21 +69,17 @@ export default async function DashboardPage() {
                     ))}
                   </ul>
                 ) : (
-                  <div className="py-10 text-center">
-                    <FilePlus2
-                      className="text-muted-foreground mx-auto size-5"
-                      aria-hidden="true"
-                    />
-                    <p className="mt-3 font-medium">Belum ada materi</p>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                      Unggah satu sumber untuk membuat ruang belajar pertama Anda.
-                    </p>
-                  </div>
+                  <EmptyState
+                    icon={FilePlus2}
+                    title="Belum ada materi"
+                    description="Unggah satu sumber—PDF, DOCX, TXT, atau link YouTube—untuk membuat ruang belajar pertamamu."
+                  />
                 )}
               </CardContent>
             </Card>
           </section>
-          <aside className="space-y-6">
+
+          <aside className="min-w-0 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Tambahkan materi</CardTitle>
@@ -95,13 +88,21 @@ export default async function DashboardPage() {
                 <UploadForm />
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-5">
-                <Sparkles className="size-4" aria-hidden="true" />
-                <p className="mt-4 text-2xl font-semibold tabular-nums">{dueCards}</p>
-                <p className="text-muted-foreground text-sm">flashcard perlu diulang hari ini</p>
-                <Button asChild className="mt-4 w-full" size="sm" variant="outline">
-                  <Link href="/belajar">{dueCards ? "Mulai ulangian" : "Buka ulangian"}</Link>
+
+            <Card className="bg-highlight text-ink">
+              <CardContent>
+                <span className="border-ink bg-surface inline-flex size-10 items-center justify-center rounded-md border-2">
+                  <Layers3 className="size-5" aria-hidden="true" />
+                </span>
+                <p className="mt-4 font-mono text-4xl font-bold tabular-nums">{dueCards}</p>
+                <p className="mt-1 text-sm font-semibold">
+                  kartu jatuh tempo hari ini—sepuluh menit sudah cukup.
+                </p>
+                <Button asChild className="mt-5 w-full" variant="secondary">
+                  <Link href="/belajar">
+                    {dueCards ? "Mulai ulangian" : "Buka ulangian"}
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </Link>
                 </Button>
               </CardContent>
             </Card>

@@ -58,13 +58,13 @@ export default async function ReviewPage() {
     <AppShell dueCount={dueCount} userName={session.user.name ?? session.user.email ?? "Pengguna"}>
       <div className="mx-auto max-w-4xl px-5 py-10 sm:px-8">
         <header className="mb-8">
-          <p className="text-muted-foreground font-mono text-xs font-semibold tracking-[0.14em]">
-            ULANGIAN
+          <p className="text-muted-foreground font-mono text-xs font-semibold tracking-[0.14em] uppercase">
+            Ulangian / lintas materi
           </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">
-            Kartu jatuh tempo dari semua materi.
+          <h1 className="text-h1 mt-3 font-extrabold">
+            Kartu jatuh tempo dari <span className="hl">semua materi</span>.
           </h1>
-          <p className="text-muted-foreground mt-2 text-sm">
+          <p className="text-muted-foreground mt-3 max-w-xl text-sm leading-relaxed">
             {dueCount
               ? `${dueCount} kartu siap diulang. Jadwalkan sesi singkat tiap hari agar benar-benar melekat.`
               : "Tidak ada kartu yang jatuh tempo hari ini."}
@@ -90,7 +90,7 @@ export default async function ReviewPage() {
         {cards.length ? (
           <p className="text-muted-foreground mt-6 flex items-center gap-2 text-sm">
             <Layers3 className="size-4" aria-hidden="true" />
-            Kartu ditampilkan bersumber dari materi Anda.
+            Kartu ditampilkan bersumber dari materimu.
           </p>
         ) : (
           <p className="text-muted-foreground mt-6 text-sm">

@@ -72,11 +72,19 @@ export default async function DocumentPage({
                     <span
                       aria-hidden="true"
                       className={[
-                        "size-2 shrink-0 rounded-full",
-                        done ? "bg-foreground" : current ? "bg-accent" : "bg-border",
+                        "size-3 shrink-0 rounded-full border-2",
+                        done
+                          ? "border-ink bg-mint"
+                          : current
+                            ? "border-ink bg-highlight"
+                            : "border-line bg-muted",
                       ].join(" ")}
                     />
-                    <span className={done || current ? "text-foreground" : "text-muted-foreground"}>
+                    <span
+                      className={
+                        done || current ? "text-foreground font-semibold" : "text-muted-foreground"
+                      }
+                    >
                       {processingStageLabel(stage)}
                     </span>
                     <span className="text-muted-foreground ml-auto font-mono text-xs">
@@ -86,10 +94,13 @@ export default async function DocumentPage({
                 );
               })}
             </ol>
-            <p className="text-muted-foreground mt-5 text-sm">
-              Ringkasan, sumber, flashcard, dan kuis sedang dibuat. Muat ulang halaman ini untuk
-              memperbarui.
-            </p>
+            <div className="border-line bg-muted mt-5 rounded-sm border-2 p-4">
+              <p className="text-sm font-semibold">Perkiraan selesai: 30 detik sampai 2 menit.</p>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Kamu boleh menutup halaman ini—ringkasan, flashcard, dan kuis akan menunggu di
+                workspace.
+              </p>
+            </div>
           </CardContent>
         </Card>
       ) : null}
@@ -135,7 +146,9 @@ export default async function DocumentPage({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-semibold tabular-nums">{document._count.chunks}</p>
+                <p className="font-mono text-3xl font-bold tabular-nums">
+                  {document._count.chunks}
+                </p>
                 <p className="text-muted-foreground text-sm">bagian dokumen</p>
               </CardContent>
             </Card>
@@ -148,7 +161,7 @@ export default async function DocumentPage({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-semibold tabular-nums">{totalCards}</p>
+                <p className="font-mono text-3xl font-bold tabular-nums">{totalCards}</p>
                 <p className="text-muted-foreground text-sm">
                   kartu{dueCards ? ` · ${dueCards} perlu diulang` : ""}
                 </p>
@@ -166,7 +179,9 @@ export default async function DocumentPage({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-semibold tabular-nums">{quiz?._count.questions ?? 0}</p>
+                <p className="font-mono text-3xl font-bold tabular-nums">
+                  {quiz?._count.questions ?? 0}
+                </p>
                 <p className="text-muted-foreground text-sm">soal siap dikerjakan</p>
                 {quiz ? (
                   <Button asChild className="mt-4" size="sm" variant="outline">
@@ -201,7 +216,7 @@ export default async function DocumentPage({
           </div>
 
           <p className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
-            <Badge className="bg-secondary">Siap</Badge>
+            <Badge variant="highlight">Siap</Badge>
             <span className="font-mono">
               {dueCards > 0
                 ? `${dueCards} kartu jatuh tempo hari ini`

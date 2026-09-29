@@ -19,7 +19,10 @@ export function DocumentTabs({
     ...(quizId ? [{ label: "Kuis", href: `/quizzes/${quizId}`, exact: false }] : []),
   ];
   return (
-    <nav aria-label="Bagian materi" className="border-border flex gap-1 overflow-x-auto border-b">
+    <nav
+      aria-label="Bagian materi"
+      className="border-line flex gap-1 overflow-x-auto border-b-2 pb-1"
+    >
       {tabs.map((tab) => {
         const active = tab.exact
           ? pathname === tab.href
@@ -28,18 +31,19 @@ export function DocumentTabs({
           <Link
             aria-current={active ? "page" : undefined}
             className={[
-              "relative inline-flex h-11 shrink-0 items-center px-3 text-sm",
-              active
-                ? "text-foreground font-medium"
-                : "text-muted-foreground hover:text-foreground",
+              "relative inline-flex h-11 shrink-0 items-center rounded-t-md px-3.5 text-sm",
+              active ? "text-foreground font-bold" : "text-muted-foreground hover:text-foreground",
             ].join(" ")}
             href={tab.href}
             key={tab.href}
           >
-            {tab.label}
             {active ? (
-              <span aria-hidden="true" className="bg-accent absolute inset-x-2 -bottom-px h-0.5" />
+              <span
+                aria-hidden="true"
+                className="bg-highlight absolute inset-x-2 bottom-2 h-3 rounded-sm"
+              />
             ) : null}
+            <span className="relative">{tab.label}</span>
           </Link>
         );
       })}

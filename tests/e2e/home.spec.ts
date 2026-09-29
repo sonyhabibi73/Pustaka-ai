@@ -6,9 +6,10 @@ test("landing page is usable without browser errors", async ({ page }) => {
     if (message.type() === "error") errors.push(message.text());
   });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /materi anda/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /mulai belajar/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /ubah 6 jam belajar/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /mulai gratis/i }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: /kamu nggak sendirian/i })).toBeVisible();
   await page.setViewportSize({ width: 375, height: 667 });
-  await expect(page.getByRole("link", { name: /masuk/i })).toBeVisible();
+  await expect(page.getByRole("banner").getByRole("link", { name: /masuk/i })).toBeVisible();
   expect(errors).toEqual([]);
 });

@@ -52,14 +52,14 @@ export default async function DocumentLayout({
           <ArrowLeft className="size-4" aria-hidden="true" />
           Kembali ke workspace
         </Link>
-        <header className="border-border mt-7 flex flex-wrap items-start justify-between gap-4 border-b pb-6">
+        <header className="border-line mt-7 flex flex-wrap items-start justify-between gap-4 border-b-2 pb-6">
           <div>
-            <p className="text-muted-foreground font-mono text-xs">
+            <p className="text-muted-foreground font-mono text-xs uppercase">
               {document.kind} · {formatDate(document.createdAt)}
             </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em]">{document.title}</h1>
+            <h1 className="text-h1 mt-2 font-extrabold">{document.title}</h1>
           </div>
-          <Badge className={isReady ? "bg-secondary" : "text-muted-foreground"}>
+          <Badge variant={isReady ? "highlight" : "muted"}>
             {documentStatusLabel(document.status)}
           </Badge>
         </header>

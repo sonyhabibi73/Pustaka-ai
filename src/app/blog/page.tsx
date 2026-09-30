@@ -31,7 +31,7 @@ export default function BlogPage() {
         </section>
 
         <section className="mx-auto max-w-6xl px-5 pb-16 sm:px-8">
-          <article className="border-ink bg-card lift shadow-2 rounded-md border-2 p-6 sm:p-8">
+          <article className="border-ink bg-card lift shadow-2 relative rounded-md border-2 p-6 sm:p-8">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="highlight">{featured.tag}</Badge>
               <span className="text-muted-foreground font-mono text-xs">
@@ -39,7 +39,10 @@ export default function BlogPage() {
               </span>
             </div>
             <h2 className="text-h2 mt-4 font-extrabold">
-              <Link href={`/blog/${featured.slug}`} className="hover:text-brand transition-colors">
+              <Link
+                href={`/blog/${featured.slug}`}
+                className="hover:text-brand transition-colors after:absolute after:inset-0 after:content-['']"
+              >
                 {featured.title}
               </Link>
             </h2>
@@ -48,7 +51,9 @@ export default function BlogPage() {
             </p>
             <Link
               href={`/blog/${featured.slug}`}
-              className="text-brand mt-5 inline-flex items-center gap-1.5 text-sm font-bold"
+              className="text-brand relative mt-5 inline-flex items-center gap-1.5 text-sm font-bold"
+              tabIndex={-1}
+              aria-hidden="true"
             >
               Baca selengkapnya <ArrowUpRight className="size-4" aria-hidden="true" />
             </Link>
@@ -58,13 +63,16 @@ export default function BlogPage() {
             {rest.map((post) => (
               <article
                 key={post.slug}
-                className="border-ink bg-card shadow-2 flex flex-col rounded-md border-2 p-5"
+                className="border-ink bg-card lift shadow-2 relative flex flex-col rounded-md border-2 p-5"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="mint">{post.tag}</Badge>
                 </div>
                 <h2 className="mt-3 text-lg font-bold text-balance">
-                  <Link href={`/blog/${post.slug}`} className="hover:text-brand transition-colors">
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="hover:text-brand transition-colors after:absolute after:inset-0 after:content-['']"
+                  >
                     {post.title}
                   </Link>
                 </h2>

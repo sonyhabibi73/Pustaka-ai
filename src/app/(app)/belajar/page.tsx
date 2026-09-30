@@ -210,7 +210,14 @@ export default async function ReviewPage({ searchParams }: { searchParams: Searc
           )}
         </section>
 
-        <FlashcardStudy backHref="/dashboard" cards={cards} emptyNotice={emptyNotice} />
+        <FlashcardStudy
+          /* key: ganti materi harus memuat ulang antrean kartu — state lokal
+             komponen klien tidak ikut berubah hanya karena props berubah. */
+          key={active?.id ?? "semua-materi"}
+          backHref="/dashboard"
+          cards={cards}
+          emptyNotice={emptyNotice}
+        />
 
         {cards.length ? (
           <p className="text-muted-foreground mt-6 flex items-center gap-2 text-sm">

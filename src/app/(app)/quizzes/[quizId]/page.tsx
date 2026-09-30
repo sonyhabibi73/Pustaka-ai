@@ -33,6 +33,7 @@ export default async function QuizPage({ params }: { params: Promise<{ quizId: s
         </p>
         <h1 className="text-h1 mt-3 font-extrabold">{quiz.title}</h1>
         <QuizClient
+          key={quiz.id}
           quizId={quiz.id}
           questions={quiz.questions.map((question) => ({
             id: question.id,

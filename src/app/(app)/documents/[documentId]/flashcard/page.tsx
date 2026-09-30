@@ -25,6 +25,7 @@ export default async function DocumentFlashcardPage({
     const failed = document.status === "FAILED";
     return (
       <FlashcardStudy
+        key={document.id}
         backHref={backHref}
         cards={[]}
         emptyNotice={
@@ -82,6 +83,7 @@ export default async function DocumentFlashcardPage({
 
   return (
     <FlashcardStudy
+      key={document.id}
       backHref={backHref}
       cards={cards}
       emptyNotice={

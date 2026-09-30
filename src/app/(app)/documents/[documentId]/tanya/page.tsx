@@ -77,6 +77,7 @@ export default async function AskDocumentPage({
 
   return (
     <ChatPanel
+      key={document.id}
       documentId={document.id}
       documentTitle={document.title}
       initialMessages={messages}

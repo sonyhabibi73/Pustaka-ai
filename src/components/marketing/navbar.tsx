@@ -23,6 +23,24 @@ const links = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    // CTA menyesuaikan sesi: pengguna yang sudah masuk tidak perlu lagi
+    // melewati halaman "Masuk" hanya untuk kembali ke workspace.
+    fetch("/api/auth/session", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { user?: { id?: string } } | null) => {
+        if (active && data?.user?.id) setAuthed(true);
+      })
+      .catch(() => {
+        /* sesi tidak terbaca: CTA tetap versi tamu */
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     function onScroll() {
@@ -70,15 +88,24 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle className="border-ink bg-card text-foreground hover:bg-muted rounded-pill hidden size-10 items-center justify-center border-2 transition-colors duration-150 sm:inline-flex" />
-          <Link className={buttonVariants({ variant: "secondary", size: "sm" })} href="/sign-in">
-            Masuk
-          </Link>
           <Link
-            className={cn(buttonVariants({ size: "sm" }), "hidden sm:inline-flex")}
-            href="/dashboard"
+            className={cn(
+              authed
+                ? buttonVariants({ size: "sm" })
+                : buttonVariants({ variant: "secondary", size: "sm" }),
+            )}
+            href={authed ? "/dashboard" : "/sign-in"}
           >
-            Mulai gratis
+            {authed ? "Buka workspace" : "Masuk"}
           </Link>
+          {authed ? null : (
+            <Link
+              className={cn(buttonVariants({ size: "sm" }), "hidden sm:inline-flex")}
+              href="/dashboard"
+            >
+              Mulai gratis
+            </Link>
+          )}
           <button
             type="button"
             className="border-ink bg-card rounded-pill inline-flex size-10 items-center justify-center border-2 md:hidden"
@@ -114,12 +141,16 @@ export function Navbar() {
             ))}
           </nav>
           <div className="mt-6 flex flex-col gap-3">
-            <Button asChild variant="secondary">
-              <Link href="/sign-in">Masuk</Link>
+            <Button asChild variant={authed ? "default" : "secondary"}>
+              <Link href={authed ? "/dashboard" : "/sign-in"}>
+                {authed ? "Buka workspace" : "Masuk"}
+              </Link>
             </Button>
-            <Button asChild>
-              <Link href="/dashboard">Mulai gratis</Link>
-            </Button>
+            {authed ? null : (
+              <Button asChild>
+                <Link href="/dashboard">Mulai gratis</Link>
+              </Button>
+            )}
             <div className="mt-2 flex items-center justify-between">
               <span className="text-muted-foreground text-sm font-semibold">Tema tampilan</span>
               <ThemeToggle />

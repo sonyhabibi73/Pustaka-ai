@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   BarChart3,
   FolderOpen,
+  Globe,
   LayoutDashboard,
   Layers3,
   LogOut,
@@ -59,12 +60,12 @@ export function SideNav({
       items: [
         { href: "/belajar", label: "Ulangian", icon: Layers3, badge: dueCount },
         { label: "Simulasi Ujian", icon: Target, soon: true },
-        { label: "Statistik", icon: BarChart3, soon: true },
+        { href: "/statistik", label: "Statistik", icon: BarChart3 },
       ],
     },
     {
       label: "Akun",
-      items: [{ label: "Pengaturan", icon: Settings, soon: true }],
+      items: [{ href: "/pengaturan", label: "Pengaturan", icon: Settings }],
     },
   ];
 
@@ -154,6 +155,16 @@ export function SideNav({
         ))}
 
         <div className="border-line mt-4 border-t pt-3">
+          <Link
+            href="/"
+            className="nav-item"
+            onClick={() => setOpen(false)}
+            aria-current={pathname === "/" ? "page" : undefined}
+          >
+            <span className="nav-dot" aria-hidden="true" />
+            <Globe className="size-4 shrink-0" aria-hidden="true" />
+            Halaman publik
+          </Link>
           <form action={logoutAction}>
             <button className="nav-item" type="submit">
               <span className="nav-dot" aria-hidden="true" />

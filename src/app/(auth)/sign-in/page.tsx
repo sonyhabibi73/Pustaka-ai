@@ -1,12 +1,22 @@
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
+import { redirect } from "next/navigation";
 
 import { signIn } from "@/lib/auth";
+import { getSession } from "@/lib/security/authz";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
-export default function SignInPage() {
+/**
+ * Kalau sesi masih ada, halaman masuk tidak ditampilkan lagi—pengguna
+ * langsung dilempar ke workspace sehingga kembali dari halaman publik tidak
+ * perlu login ulang.
+ */
+export default async function SignInPage() {
+  const session = await getSession();
+  if (session?.user?.id) redirect("/dashboard");
+
   return (
     <main id="main-content" className="grid min-h-dvh place-items-center p-5">
       <div className="w-full max-w-md">

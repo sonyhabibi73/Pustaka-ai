@@ -1,5 +1,5 @@
 /** Kunci hari (YYYY-MM-DD, UTC) dari sebuah tanggal. */
-function dayKey(date: Date) {
+export function dayKey(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 

@@ -24,12 +24,16 @@ import { Footer } from "@/components/marketing/footer";
 import { HeroDemo } from "@/components/marketing/hero-demo";
 import { Navbar } from "@/components/marketing/navbar";
 
-/** Satu sumber angka untuk seluruh halaman (temuan #1: angka tidak konsisten). */
+/**
+ * Satu sumber angka untuk seluruh halaman (temuan #1: angka tidak konsisten).
+ * Semuanya fakta produk yang bisa diverifikasi sendiri—bukan klaim jumlah
+ * pengguna atau rating yang belum bisa kita buktikan.
+ */
 const stats = [
-  { value: "1 juta+", label: "pelajar aktif" },
-  { value: "12 juta", label: "catatan dibuat" },
-  { value: "4,9/5", label: "rating pengguna" },
-  { value: "320+", label: "sekolah & kampus" },
+  { value: "4", label: "format sumber: PDF, DOCX, TXT, dan YouTube" },
+  { value: "≤2 mnt", label: "materi siap dipakai dari unggahan pertama" },
+  { value: "100%", label: "jawaban berpijak pada materimu sendiri" },
+  { value: "Gratis", label: "coba dulu, tanpa kartu kredit" },
 ] as const;
 
 const complaints = [
@@ -169,7 +173,7 @@ export default function HomePage() {
           <div className="grid items-start gap-12 lg:grid-cols-[1.05fr_0.95fr]">
             <div>
               <Badge variant="highlight" className="font-mono text-[11px] tracking-wide uppercase">
-                Dipakai {stats[0].value} pelajar
+                Ringkasan · Flashcard · Kuis · Tanya
               </Badge>
               <h1 className="text-display mt-6 font-extrabold tracking-[-0.03em] text-balance">
                 Ubah 6 jam belajar jadi <span className="hl">1 jam</span>
@@ -197,8 +201,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── [3] Bar bukti sosial (statis, tanpa animasi) ───────── */}
-        <section className="border-line bg-card border-y" aria-label="Angka pengguna">
+        {/* ── [3] Bar fakta produk (statis, tanpa animasi) ───────── */}
+        <section className="border-line bg-card border-y" aria-label="Fakta produk">
           <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 py-8 sm:px-8 md:grid-cols-4">
             {stats.map((stat) => (
               <div key={stat.label} className="text-center md:text-left">

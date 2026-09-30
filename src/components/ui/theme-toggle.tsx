@@ -44,6 +44,8 @@ export function ThemeToggle({ className }: { className?: string }) {
       /* penyimpanan tidak tersedia: tema tetap berlaku untuk sesi ini */
     }
     emit();
+    // Beri tahu komponen lain (mis. ThemePicker di Pengaturan) bahwa tema berubah.
+    window.dispatchEvent(new Event("theme-change"));
   }
 
   return (

@@ -4,3 +4,6 @@ export type ProfileState = {
   message?: string;
   error?: string;
 };
+
+/** Hasil simpan preferensi belajar (kartu per sesi & materi default). */
+export type StudyPrefsState = ProfileState;

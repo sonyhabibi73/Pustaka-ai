@@ -92,7 +92,7 @@ async function StatistikBody({ userId, dueCards }: { userId: string; dueCards: n
       label: "Streak",
       value: streak,
       suffix: streak ? "hari" : undefined,
-      hint: streak ? "hari berturut-turut" : "mulai ulangian hari ini",
+      hint: streak ? "hari berturut-turut" : "mulai ulangan hari ini",
       accent: true,
     },
     { label: "Ulangan", value: reviews30, hint: "kartu dijawab dalam 30 hari" },
@@ -261,7 +261,7 @@ async function StatistikBody({ userId, dueCards }: { userId: string; dueCards: n
               </p>
               <Button asChild className="mt-5 w-full" variant="secondary">
                 <Link href="/belajar">
-                  {dueCards ? "Mulai ulangian" : "Buka ulangian"}
+                  {dueCards ? "Mulai ulangan" : "Buka ulangan"}
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>

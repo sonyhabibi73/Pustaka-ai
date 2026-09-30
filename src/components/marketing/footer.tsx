@@ -15,7 +15,7 @@ const columns = [
     title: "Belajar",
     items: [
       { label: "Workspace", href: "/dashboard" },
-      { label: "Ulangian kartu", href: "/belajar" },
+      { label: "Ulangan kartu", href: "/belajar" },
       { label: "Tips menjaga streak", href: "/blog" },
       { label: "FAQ", href: "/#faq" },
     ],

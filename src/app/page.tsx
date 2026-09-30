@@ -149,7 +149,7 @@ const testimonials = [
     initials: "YK",
     name: "Yoga Kurniawan",
     level: "SMA kelas 12",
-    quote: "Ulangian harian bikin saya belajar dikit-dikit tiap hari, bukan begadang semalam.",
+    quote: "Ulangan harian bikin saya belajar dikit-dikit tiap hari, bukan begadang semalam.",
   },
 ] as const;
 
@@ -363,7 +363,7 @@ export default function HomePage() {
                   <span className="border-ink bg-highlight text-ink inline-flex size-10 items-center justify-center rounded-md border-2">
                     <BookOpenCheck className="size-5" aria-hidden="true" />
                   </span>
-                  <h3 className="mt-4 text-xl font-bold">Ulangian harian, lintas materi</h3>
+                  <h3 className="mt-4 text-xl font-bold">Ulangan harian, lintas materi</h3>
                   <p className="mt-2 text-sm leading-relaxed opacity-90">
                     Semua kartu jatuh tempo dari seluruh materi dikumpulkan dalam satu antrean.
                     Sepuluh menit sehari mengalahkan dua jam semalam sebelum ujian.
@@ -371,7 +371,7 @@ export default function HomePage() {
                 </div>
                 <Button asChild variant="accent">
                   <Link href="/belajar">
-                    Mulai ulangian <ArrowRight className="size-4" aria-hidden="true" />
+                    Mulai ulangan <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </Button>
               </div>
@@ -522,7 +522,7 @@ export default function HomePage() {
             >
               <div className="bg-surface border-ink rounded-[1.4rem] border-2 px-4 py-6">
                 <p className="text-muted-foreground text-center font-mono text-[10px]">
-                  ULANGIAN · 1 / 12
+                  ULANGAN · 1 / 12
                 </p>
                 <div className="border-ink bg-background shadow-1 mt-3 rounded-md border-2 px-4 py-8 text-center">
                   <p className="text-sm font-bold">Apa fungsi ATP dalam sel?</p>

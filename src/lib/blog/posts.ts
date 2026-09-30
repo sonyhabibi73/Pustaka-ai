@@ -50,7 +50,7 @@ export const posts: Post[] = [
       { type: "h2", text: "Cara mulai minggu ini" },
       {
         type: "p",
-        text: "Unggah satu materi, biarkan aplikasi membuat kartunya, lalu kerjakan ulangian harian setiap hari pada jam yang sama—misalnya sepulang sekolah. Kuncinya bukan lamanya sesi, melainkan konsistensi hariannya. Streak yang putus sehari sudah cukup membuat jadwalnya kacau.",
+        text: "Unggah satu materi, biarkan aplikasi membuat kartunya, lalu kerjakan ulangan harian setiap hari pada jam yang sama—misalnya sepulang sekolah. Kuncinya bukan lamanya sesi, melainkan konsistensi hariannya. Streak yang putus sehari sudah cukup membuat jadwalnya kacau.",
       },
       {
         type: "p",

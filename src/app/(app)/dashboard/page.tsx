@@ -92,7 +92,7 @@ async function DashboardBody({ dueCards, userId }: { dueCards: number; userId: s
     {
       label: "Streak",
       value: streak,
-      hint: streak ? "hari berturut-turut" : "mulai ulangian hari ini",
+      hint: streak ? "hari berturut-turut" : "mulai ulangan hari ini",
       accent: true,
     },
     { label: "Dikuasai", value: mastered, hint: "jarak ulangan ≥ 1 minggu" },
@@ -198,7 +198,7 @@ async function DashboardBody({ dueCards, userId }: { dueCards: number; userId: s
               </p>
               <Button asChild className="mt-5 w-full" variant="secondary">
                 <Link href="/belajar">
-                  {dueCards ? "Mulai ulangian" : "Buka ulangian"}
+                  {dueCards ? "Mulai ulangan" : "Buka ulangan"}
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>

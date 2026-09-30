@@ -58,7 +58,7 @@ export function SideNav({
     {
       label: "Aktivitas",
       items: [
-        { href: "/belajar", label: "Ulangian", icon: Layers3, badge: dueCount },
+        { href: "/belajar", label: "Ulangan", icon: Layers3, badge: dueCount },
         { label: "Simulasi Ujian", icon: Target, soon: true },
         { href: "/statistik", label: "Statistik", icon: BarChart3 },
       ],

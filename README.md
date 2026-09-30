@@ -2,7 +2,7 @@
 
 Workspace belajar berbasis dokumen: unggah PDF/TXT/DOCX atau tautan YouTube, lalu pelajari isinya lewat ringkasan yang berpaku pada sumber, flashcard spaced repetition, kuis interaktif, dan chat RAG yang hanya menjawab dari dokumenmu sendiri.
 
-Situs publiknya (beranda, blog, halaman auth) dan workspace (`/dashboard`) berbagi satu identitas visual: **Ruang Belajar Stabilo** — kertas, tinta, dan stabilo kuning untuk menandai hal penting. Detailnya ada di [`Desain.md`](Desain.md); alur produk dan penjelasan tiap fitur ada di [`penjelasan.md`](penjelasan.md).
+Situs publiknya (beranda, blog, halaman auth) dan workspace (`/dashboard`) berbagi satu identitas visual: **Ruang Belajar Stabilo** — kertas, tinta, dan stabilo kuning untuk menandai hal penting. Aturan detailnya ada di dokumen desain internal (tidak ikut di repo); alur produk dan penjelasan tiap fitur ada di [`penjelasan.md`](penjelasan.md).
 
 > **Status**: pengembangan aktif. Menu **Koleksi** dan **Simulasi Ujian** masih berlabel _Segera_.
 
@@ -130,6 +130,6 @@ E2E memverifikasi beranda & halaman masuk di viewport desktop dan seluler tanpa 
 
 ## Desain
 
-- Identitas **Ruang Belajar Stabilo**: border tinta 2px, radius kecil, bayangan keras, aksen stabilo kuning — aturannya di [`Desain.md`](Desain.md).
+- Identitas **Ruang Belajar Stabilo**: border tinta 2px, radius kecil, bayangan keras, aksen stabilo kuning — aturan resminya ada di dokumen desain internal (Desain.md).
 - **Tema bawaan gelap**; pengguna bisa memilih Terang / Gelap / Ikut sistem di Pengaturan → Tampilan (tersimpan di `localStorage`).
 - Sapaan selalu **"kamu"** di seluruh copy.

@@ -82,7 +82,7 @@ export async function GET() {
       {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
-          "Content-Disposition": 'attachment; filename="pelajari-ai-eksport.json"',
+          "Content-Disposition": 'attachment; filename="pustaka-ai-eksport.json"',
           "Cache-Control": "no-store",
         },
       },

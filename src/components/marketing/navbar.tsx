@@ -79,9 +79,9 @@ export function Navbar() {
           <Link
             href="/"
             className="text-lg font-extrabold tracking-tight"
-            aria-label="Pelajari AI — beranda"
+            aria-label="Pustaka AI — beranda"
           >
-            pelajari<span className="text-primary">.ai</span>
+            pustaka<span className="text-primary">.ai</span>
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Navigasi utama">

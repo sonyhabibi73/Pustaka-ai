@@ -98,7 +98,7 @@ export const posts: Post[] = [
       },
       {
         type: "p",
-        text: "Di Pelajari AI, kartu dibuat otomatis dari dokumenmu mengikuti aturan ini, dan kamu tetap bisa menilai seberapa yakinmu tiap kali membaliknya.",
+        text: "Di Pustaka AI, kartu dibuat otomatis dari dokumenmu mengikuti aturan ini, dan kamu tetap bisa menilai seberapa yakinmu tiap kali membaliknya.",
       },
     ],
   },
@@ -203,7 +203,7 @@ export const posts: Post[] = [
       },
       {
         type: "p",
-        text: "Prinsip yang sama berlaku di Pelajari AI: pertanyaan yang tidak tercakup materi dijawab apa adanya, bukan ditutup dengan jawaban karangan.",
+        text: "Prinsip yang sama berlaku di Pustaka AI: pertanyaan yang tidak tercakup materi dijawab apa adanya, bukan ditutup dengan jawaban karangan.",
       },
     ],
   },

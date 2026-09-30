@@ -18,9 +18,9 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Pelajari AI", template: "%s · Pelajari AI" },
+  title: { default: "Pustaka AI", template: "%s · Pustaka AI" },
   description: "Belajar dari materi kamu sendiri—tanpa jawaban di luar konteks.",
-  applicationName: "Pelajari AI",
+  applicationName: "Pustaka AI",
 };
 
 export const viewport: Viewport = {

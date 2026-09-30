@@ -1,4 +1,4 @@
-# pelajari.ai
+# Pustaka.ai
 
 Workspace belajar berbasis dokumen: unggah PDF/TXT/DOCX atau tautan YouTube, lalu pelajari isinya lewat ringkasan yang berpaku pada sumber, flashcard spaced repetition, kuis interaktif, dan chat RAG yang hanya menjawab dari dokumenmu sendiri.
 

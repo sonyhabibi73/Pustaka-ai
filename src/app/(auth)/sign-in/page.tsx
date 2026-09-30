@@ -22,7 +22,7 @@ export default async function SignInPage() {
       <div className="w-full max-w-md">
         <div className="mb-5 flex items-center justify-between">
           <Link href="/" className="text-lg font-extrabold tracking-tight">
-            pelajari<span className="text-primary">.ai</span>
+            pustaka<span className="text-primary">.ai</span>
           </Link>
           <ThemeToggle />
         </div>

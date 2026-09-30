@@ -37,7 +37,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-[1.2fr_repeat(3,1fr)]">
         <div>
           <Link href="/" className="text-lg font-extrabold tracking-tight">
-            pelajari<span className="text-primary">.ai</span>
+            pustaka<span className="text-primary">.ai</span>
           </Link>
           <p className="text-muted-foreground mt-3 max-w-xs text-sm leading-relaxed">
             Ruang belajar yang menjawab hanya dari materimu sendiri.
@@ -58,7 +58,7 @@ export function Footer() {
               <span aria-hidden="true">YT</span>
             </a>
             <a
-              href="mailto:halo@pelajari.ai"
+              href="mailto:halo@pustaka.ai"
               className="border-ink bg-card text-foreground hover:bg-muted rounded-pill inline-flex size-10 items-center justify-center border-2 transition-colors duration-150"
               aria-label="Email"
             >
@@ -88,7 +88,7 @@ export function Footer() {
 
       <div className="border-line border-t">
         <div className="text-muted-foreground mx-auto flex max-w-6xl flex-col gap-2 px-5 py-6 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <p>© 2026 Pelajari AI · Dibuat untuk pelajar Indonesia.</p>
+          <p>© 2026 Pustaka AI · Dibuat untuk pelajar Indonesia.</p>
           <p>Materi belajarmu adalah milikmu—tidak dijual ke pihak ketiga.</p>
         </div>
       </div>

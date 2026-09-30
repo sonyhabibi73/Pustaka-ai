@@ -27,7 +27,7 @@ export async function enforceRateLimit(
     const limiter = new Ratelimit({
       redis: Redis.fromEnv(),
       limiter: Ratelimit.slidingWindow(limit, window),
-      prefix: "pelajari-ai",
+      prefix: "pustaka-ai",
     });
     const result = await limiter.limit(identifier);
     if (!result.success) throw new Error("RATE_LIMITED");

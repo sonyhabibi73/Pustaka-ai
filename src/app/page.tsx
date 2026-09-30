@@ -105,7 +105,7 @@ const faqs = [
   {
     question: "Boleh dipakai untuk mengerjakan tugas?",
     answer:
-      "Pelajari AI membantu kamu memahami materi—bukan mengerjakan tugasmu. Pakai untuk belajar, lalu kerjakan tugasmu sendiri sesuai aturan sekolah atau kampusmu.",
+      "Pustaka AI membantu kamu memahami materi—bukan mengerjakan tugasmu. Pakai untuk belajar, lalu kerjakan tugasmu sendiri sesuai aturan sekolah atau kampusmu.",
   },
   {
     question: "Bisa dipakai di ponsel?",
@@ -230,7 +230,7 @@ export default function HomePage() {
             ))}
           </div>
           <p className="text-muted-foreground mt-8 text-lg">
-            Pelajari bantu kamu{" "}
+            Pustaka bantu kamu{" "}
             <span className="hl text-foreground font-semibold">mulai dari yang paling penting</span>
             .
           </p>
@@ -414,7 +414,7 @@ export default function HomePage() {
           <div className="border-ink shadow-2 mt-8 overflow-x-auto rounded-md border-2">
             <table className="w-full min-w-[42rem] border-collapse text-sm">
               <caption className="sr-only">
-                Perbandingan Pelajari AI dengan belajar manual dan chat AI umum
+                Perbandingan Pustaka AI dengan belajar manual dan chat AI umum
               </caption>
               <thead>
                 <tr className="bg-muted">
@@ -425,7 +425,7 @@ export default function HomePage() {
                     scope="col"
                     className="border-line bg-highlight/40 border-b-2 border-l-2 px-4 py-3 text-center font-extrabold"
                   >
-                    Pelajari AI
+                    Pustaka AI
                   </th>
                   <th
                     scope="col"
@@ -504,7 +504,7 @@ export default function HomePage() {
                 Latih kartu di sela antre, kuis di perjalanan
               </h2>
               <p className="text-muted-foreground mt-4 max-w-xl leading-relaxed">
-                Pelajari AI berjalan penuh di browser ponsel—tanpa instalasi, tanpa aplikasi
+                Pustaka AI berjalan penuh di browser ponsel—tanpa instalasi, tanpa aplikasi
                 tambahan. Streak dan jadwal ulang ikut tersimpan di akunmu.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
@@ -554,8 +554,8 @@ export default function HomePage() {
               </h2>
               <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
                 Belum ketemu? Kirim email ke{" "}
-                <a className="text-brand font-semibold underline" href="mailto:halo@pelajari.ai">
-                  halo@pelajari.ai
+                <a className="text-brand font-semibold underline" href="mailto:halo@pustaka.ai">
+                  halo@pustaka.ai
                 </a>
                 .
               </p>

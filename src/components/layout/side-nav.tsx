@@ -75,9 +75,9 @@ export function SideNav({
         <Link
           href="/dashboard"
           className="text-base font-extrabold tracking-tight"
-          aria-label="Pelajari AI — workspace"
+          aria-label="Pustaka AI — workspace"
         >
-          pelajari<span className="text-primary">.ai</span>
+          pustaka<span className="text-primary">.ai</span>
         </Link>
         <div className="flex items-center gap-2">
           <span className="text-muted-foreground hidden font-mono text-[11px] font-semibold tracking-[0.14em] lg:inline">

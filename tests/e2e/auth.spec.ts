@@ -9,7 +9,7 @@ test("sign-in page renders the Google hand-off without browser errors", async ({
   await page.goto("/sign-in");
   await expect(page.getByRole("heading", { name: /masuk untuk mulai belajar/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /lanjutkan dengan google/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /pelajari/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /pustaka/i })).toBeVisible();
   expect(errors).toEqual([]);
 });
 

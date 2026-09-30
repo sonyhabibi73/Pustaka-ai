@@ -73,10 +73,15 @@ export function FlashcardStudy({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ grade: value }),
+          signal: AbortSignal.timeout(20_000),
         });
         if (!response.ok) {
           const payload = (await response.json().catch(() => null)) as { error?: string } | null;
-          throw new Error(payload?.error ?? "Nilai gagal disimpan. Silakan coba lagi.");
+          throw new Error(
+            response.status === 401
+              ? "Sesi kamu sudah berakhir. Muat ulang halaman, masuk kembali, lalu menilai ulang."
+              : (payload?.error ?? "Nilai gagal disimpan. Silakan coba lagi."),
+          );
         }
         setTally((current) => ({ ...current, [value]: current[value] + 1 }));
         setReviewed((count) => count + 1);
@@ -87,7 +92,13 @@ export function FlashcardStudy({
         if (value === "AGAIN") setRequeue((list) => [...list, card]);
         setRevealed(false);
       } catch (caught) {
-        setError(caught instanceof Error ? caught.message : "Nilai gagal disimpan.");
+        setError(
+          caught instanceof DOMException && caught.name === "TimeoutError"
+            ? "Server lama merespons — nilai belum tersimpan. Coba lagi."
+            : caught instanceof Error
+              ? caught.message
+              : "Nilai gagal disimpan.",
+        );
       } finally {
         setBusy(false);
       }

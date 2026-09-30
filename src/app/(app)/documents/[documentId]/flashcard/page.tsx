@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/security/authz";
 import { prisma } from "@/lib/db";
 import { FlashcardStudy, type StudyCard } from "@/components/documents/flashcard-study";
 import { resolveChunkIndexes } from "@/lib/study/due";
@@ -11,7 +11,7 @@ export default async function DocumentFlashcardPage({
   params: Promise<{ documentId: string }>;
 }) {
   const { documentId } = await params;
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/sign-in");
 
   const document = await prisma.document.findFirst({
@@ -22,14 +22,22 @@ export default async function DocumentFlashcardPage({
 
   const backHref = `/documents/${document.id}`;
   if (document.status !== "READY") {
+    const failed = document.status === "FAILED";
     return (
       <FlashcardStudy
         backHref={backHref}
         cards={[]}
-        emptyNotice={{
-          title: "Materi belum selesai diproses.",
-          body: "Flashcard dibuat setelah teks diekstrak, dipecah, dan dirangkai menjadi soal. Muat ulang halaman ini beberapa saat lagi.",
-        }}
+        emptyNotice={
+          failed
+            ? {
+                title: "Materi gagal diproses.",
+                body: "Flashcard dibuat setelah materi berhasil diproses. Buka halaman materi untuk melihat penyebabnya dan mencoba proses ulang.",
+              }
+            : {
+                title: "Materi belum selesai diproses.",
+                body: "Flashcard dibuat setelah teks diekstrak, dipecah, dan dirangkai menjadi soal. Muat ulang halaman ini beberapa saat lagi.",
+              }
+        }
       />
     );
   }

@@ -1,13 +1,15 @@
 import Link from "next/link";
+import { FilePlus2, TriangleAlert } from "lucide-react";
 import { BookOpenCheck, Layers3, ListChecks, MessagesSquare, Quote } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/security/authz";
 import { prisma } from "@/lib/db";
 import { Markdown } from "@/components/ui/markdown";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { processingStageLabel } from "@/lib/documents/labels";
+import { RetryDocumentButton } from "@/components/documents/retry-document-button";
+import { processingErrorMessage, processingStageLabel } from "@/lib/documents/labels";
 
 const STAGE_ORDER = ["TEXT_EXTRACTION", "CHUNKING", "EMBEDDING", "ARTIFACT_GENERATION"] as const;
 
@@ -17,7 +19,7 @@ export default async function DocumentPage({
   params: Promise<{ documentId: string }>;
 }) {
   const { documentId } = await params;
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/sign-in");
 
   const document = await prisma.document.findFirst({
@@ -27,6 +29,7 @@ export default async function DocumentPage({
       status: true,
       summaryMarkdown: true,
       processingError: true,
+      processingErrorCode: true,
       _count: { select: { chunks: true } },
       flashcards: { select: { dueAt: true } },
       quizzes: {
@@ -108,13 +111,34 @@ export default async function DocumentPage({
       {document.status === "FAILED" ? (
         <Card>
           <CardHeader>
-            <CardTitle className="text-destructive">Materi gagal diproses</CardTitle>
+            <CardTitle className="text-destructive flex items-center gap-2">
+              <TriangleAlert className="size-4" aria-hidden="true" />
+              Materi gagal diproses
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground text-sm">
-              {document.processingError ??
-                "Coba unggah ulang file atau gunakan materi dengan teks yang dapat diekstrak."}
+          <CardContent className="space-y-4">
+            <p className="text-sm leading-relaxed">
+              {processingErrorMessage(document.processingErrorCode)}
             </p>
+            {document.processingError ? (
+              <details className="border-line bg-muted rounded-sm border-2 p-3">
+                <summary className="cursor-pointer font-mono text-xs font-bold">
+                  Detail teknis
+                </summary>
+                <p className="text-muted-foreground mt-2 font-mono text-xs break-words">
+                  {document.processingError}
+                </p>
+              </details>
+            ) : null}
+            <div className="flex flex-wrap items-center gap-3">
+              <RetryDocumentButton documentId={document.id} />
+              <Button asChild variant="secondary">
+                <Link href="/dashboard">
+                  <FilePlus2 className="size-4" aria-hidden="true" />
+                  Unggah sumber lain
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
       ) : null}

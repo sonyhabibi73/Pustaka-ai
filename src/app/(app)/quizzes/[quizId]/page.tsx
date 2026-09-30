@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/security/authz";
 import { prisma } from "@/lib/db";
 import { AppShell } from "@/components/layout/app-shell";
 import { QuizClient } from "@/components/documents/quiz-client";
 import { countDueCards } from "@/lib/study/due";
 
 export default async function QuizPage({ params }: { params: Promise<{ quizId: string }> }) {
-  const [{ quizId }, session] = await Promise.all([params, auth()]);
+  const [{ quizId }, session] = await Promise.all([params, getSession()]);
   if (!session?.user?.id) redirect("/sign-in");
   const [quiz, dueCount] = await Promise.all([
     prisma.quiz.findFirst({

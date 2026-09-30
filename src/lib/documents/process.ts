@@ -99,45 +99,51 @@ export async function processDocument(documentId: string) {
         createQuiz(context, document.title),
       ]);
       const byIndex = new Map(savedChunks.map((chunk) => [chunk.chunkIndex, chunk.id]));
-      await prisma.$transaction(async (tx) => {
-        await tx.flashcard.deleteMany({ where: { documentId } });
-        await tx.quiz.deleteMany({ where: { documentId } });
-        await tx.document.update({
-          where: { id: documentId },
-          data: { summaryMarkdown: summary, summaryGeneratedAt: new Date() },
-        });
-        await tx.flashcard.createMany({
-          data: cards.map((card) => ({
-            userId: document.userId,
-            documentId,
-            front: card.front,
-            back: card.back,
-            sourceChunkIds: card.chunkIndexes.flatMap((index) => byIndex.get(index) ?? []),
-          })),
-        });
-        const quiz = await tx.quiz.create({
-          data: { documentId, title: `Kuis · ${document.title}`, status: "PUBLISHED" },
-        });
-        for (const [position, question] of questions.entries()) {
-          const created = await tx.quizQuestion.create({
-            data: {
-              quizId: quiz.id,
-              position,
-              prompt: question.prompt,
-              options: question.options,
-              correctIndex: question.correctIndex,
-              explanation: question.explanation,
-              difficulty: question.difficulty,
-            },
+      // Banyak query kecil di dalam satu transaksi (hapus, insert kartu, buat
+      // kuis + soal + sumber). Latensi database beberapa ratus milidetik per
+      // query membuat bawaan Prisma 5 detik mudah lewat; pekerjaan ini jalan di
+      // latar belakang, jadi beri ruang lebih lega.
+      await prisma.$transaction(
+        async (tx) => {
+          await tx.flashcard.deleteMany({ where: { documentId } });
+          await tx.quiz.deleteMany({ where: { documentId } });
+          await tx.document.update({
+            where: { id: documentId },
+            data: { summaryMarkdown: summary, summaryGeneratedAt: new Date() },
           });
-          await tx.quizQuestionSource.createMany({
-            data: question.chunkIndexes.flatMap((index) => {
+          await tx.flashcard.createMany({
+            data: cards.map((card) => ({
+              userId: document.userId,
+              documentId,
+              front: card.front,
+              back: card.back,
+              sourceChunkIds: card.chunkIndexes.flatMap((index) => byIndex.get(index) ?? []),
+            })),
+          });
+          const quiz = await tx.quiz.create({
+            data: { documentId, title: `Kuis · ${document.title}`, status: "PUBLISHED" },
+          });
+          for (const [position, question] of questions.entries()) {
+            const created = await tx.quizQuestion.create({
+              data: {
+                quizId: quiz.id,
+                position,
+                prompt: question.prompt,
+                options: question.options,
+                correctIndex: question.correctIndex,
+                explanation: question.explanation,
+                difficulty: question.difficulty,
+              },
+            });
+            const sources = question.chunkIndexes.flatMap((index) => {
               const chunkId = byIndex.get(index);
               return chunkId ? [{ questionId: created.id, chunkId }] : [];
-            }),
-          });
-        }
-      });
+            });
+            if (sources.length) await tx.quizQuestionSource.createMany({ data: sources });
+          }
+        },
+        { timeout: 60_000, maxWait: 15_000 },
+      );
     });
     await prisma.document.update({ where: { id: documentId }, data: { status: "READY" } });
   } catch (error) {

@@ -25,21 +25,24 @@ export async function POST(
       },
       input.grade,
     );
-    const updated = await prisma.$transaction(async (tx) => {
-      const result = await tx.flashcard.update({
-        where: { id: card.id },
-        data: { ...next, lastReviewedAt: new Date() },
-      });
-      await tx.flashcardReview.create({
-        data: {
-          flashcardId: card.id,
-          grade: input.grade,
-          intervalDays: next.intervalDays,
-          easeFactor: next.easeFactor,
-        },
-      });
-      return result;
-    });
+    const updated = await prisma.$transaction(
+      async (tx) => {
+        const result = await tx.flashcard.update({
+          where: { id: card.id },
+          data: { ...next, lastReviewedAt: new Date() },
+        });
+        await tx.flashcardReview.create({
+          data: {
+            flashcardId: card.id,
+            grade: input.grade,
+            intervalDays: next.intervalDays,
+            easeFactor: next.easeFactor,
+          },
+        });
+        return result;
+      },
+      { timeout: 15_000, maxWait: 5_000 },
+    );
     return Response.json({ dueAt: updated.dueAt, intervalDays: updated.intervalDays });
   } catch (error) {
     return apiError(error);

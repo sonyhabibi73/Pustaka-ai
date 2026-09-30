@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, FilePlus2, Files, Layers3 } from "lucide-react";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/security/authz";
 import { prisma } from "@/lib/db";
 import { AppShell } from "@/components/layout/app-shell";
 import { UploadForm } from "@/components/documents/upload-form";
@@ -13,7 +13,7 @@ import { formatDate } from "@/lib/utils";
 import { documentStatusLabel } from "@/lib/documents/labels";
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/sign-in");
   const [documents, dueCards] = await Promise.all([
     prisma.document.findMany({

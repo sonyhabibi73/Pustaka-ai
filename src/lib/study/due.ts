@@ -1,9 +1,11 @@
 import "server-only";
-import { prisma } from "@/lib/db";
+import { prisma, withDbRetry } from "@/lib/db";
 
 /** Jumlah kartu yang jatuh tempo sekarang — dipakai badge navigasi & dashboard. */
 export function countDueCards(userId: string) {
-  return prisma.flashcard.count({ where: { userId, dueAt: { lte: new Date() } } });
+  return withDbRetry(() =>
+    prisma.flashcard.count({ where: { userId, dueAt: { lte: new Date() } } }),
+  );
 }
 
 /**
@@ -13,10 +15,12 @@ export function countDueCards(userId: string) {
 export async function resolveChunkIndexes(sourceChunkIds: string[]) {
   const ids = [...new Set(sourceChunkIds)];
   if (!ids.length) return [] as number[];
-  const chunks = await prisma.documentChunk.findMany({
-    where: { id: { in: ids } },
-    select: { id: true, chunkIndex: true },
-  });
+  const chunks = await withDbRetry(() =>
+    prisma.documentChunk.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, chunkIndex: true },
+    }),
+  );
   const byId = new Map(chunks.map((chunk) => [chunk.id, chunk.chunkIndex + 1]));
   return sourceChunkIds
     .map((id) => byId.get(id))

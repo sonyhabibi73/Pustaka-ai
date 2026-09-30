@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/security/authz";
 import { prisma } from "@/lib/db";
 import { AppShell } from "@/components/layout/app-shell";
 import { DocumentTabs } from "@/components/documents/document-tabs";
@@ -17,7 +17,7 @@ export default async function DocumentLayout({
   children: React.ReactNode;
   params: Promise<{ documentId: string }>;
 }) {
-  const [{ documentId }, session] = await Promise.all([params, auth()]);
+  const [{ documentId }, session] = await Promise.all([params, getSession()]);
   if (!session?.user?.id) redirect("/sign-in");
   const [document, dueCount] = await Promise.all([
     prisma.document.findFirst({

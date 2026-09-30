@@ -9,7 +9,66 @@ declare global {
 function createPrismaClient() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) throw new Error("DATABASE_URL belum dikonfigurasi.");
-  return new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+  // Koneksi ke pooler Neon bisa terputus di tengah jalan ("Read", ETIMEDOUT).
+  // Batasi waktu hubung supaya permintaan tidak menggantung, dan tutup socket
+  // yang menganggur sebelum dipakai ulang oleh server.
+  return new PrismaClient({
+    adapter: new PrismaPg({
+      connectionString,
+      connectionTimeoutMillis: 10_000,
+      idleTimeoutMillis: 15_000,
+    }),
+  });
+}
+
+/**
+ * Kegagalan koneksi yang biasanya bersifat sementara dan layak dicoba ulang.
+ * Error query (constraint, data tidak ada) tidak termasuk di sini.
+ */
+const TRANSIENT_NEEDLES = [
+  "etimedout",
+  "econnreset",
+  "econnrefused",
+  "epipe",
+  "socket hang up",
+  "connection terminated",
+  "connection closed",
+  "read error",
+  "client closed",
+  "timeout",
+  "p1001",
+  "p1002",
+  "p1008",
+  "p2024",
+  "fetch failed",
+];
+
+export function isTransientDbError(error: unknown) {
+  const seen = new Set<unknown>();
+  let current: unknown = error;
+  while (current && typeof current === "object" && !seen.has(current)) {
+    seen.add(current);
+    const candidate = current as { message?: string; code?: string };
+    const text = `${candidate.message ?? ""} ${candidate.code ?? ""}`.toLowerCase();
+    if (TRANSIENT_NEEDLES.some((needle) => text.includes(needle))) return true;
+    current = (current as { cause?: unknown }).cause;
+  }
+  return false;
+}
+
+/** Jalankan query dengan percobaan ulang singkat saat koneksi DB putus sebentar. */
+export async function withDbRetry<T>(run: () => Promise<T>, attempts = 3): Promise<T> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await run();
+    } catch (error) {
+      lastError = error;
+      if (!isTransientDbError(error) || attempt === attempts) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 120 * attempt));
+    }
+  }
+  throw lastError;
 }
 
 function resolveClient() {

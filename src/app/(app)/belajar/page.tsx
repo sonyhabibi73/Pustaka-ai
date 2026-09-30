@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Layers3 } from "lucide-react";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/security/authz";
 import { prisma } from "@/lib/db";
 import { AppShell } from "@/components/layout/app-shell";
 import { FlashcardStudy, type StudyCard } from "@/components/documents/flashcard-study";
@@ -9,7 +9,7 @@ import { countDueCards, resolveChunkIndexes } from "@/lib/study/due";
 import { formatDate } from "@/lib/utils";
 
 export default async function ReviewPage() {
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/sign-in");
   const userId = session.user.id;
   const now = new Date();

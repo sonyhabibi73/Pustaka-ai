@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/security/authz";
 import { prisma } from "@/lib/db";
 import { ChatPanel, type ChatMessage } from "@/components/chat/chat-panel";
 import { excerptOf } from "@/lib/ai/excerpt";
@@ -13,7 +13,7 @@ export default async function AskDocumentPage({
   params: Promise<{ documentId: string }>;
 }) {
   const { documentId } = await params;
-  const session = await auth();
+  const session = await getSession();
   if (!session?.user?.id) redirect("/sign-in");
 
   const document = await prisma.document.findFirst({

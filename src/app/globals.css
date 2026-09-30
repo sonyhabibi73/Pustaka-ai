@@ -389,6 +389,195 @@ body {
   transform: none !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   Skop tema "Pahamin" — spesifikasi dashboard yang ditempel user:
+   monokrom zinc, garis tipis 1px, satu aksen emerald, amber khusus
+   streak, tanpa bayangan keras & tanpa tombol yang melayang.
+   Dipasang pada AppShell (area setelah masuk); beranda, blog, dan
+   halaman masuk tetap memakai identitas Ruang Belajar Stabilo.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Pilih palet hanya saat shell terpasang — beranda, blog, dan halaman
+   masuk tidak punya [data-shell] sehingga tetap memakai Stabilo. */
+:root:has([data-shell="pahamin"]) {
+  /* warna — mode terang (zinc / emerald) */
+  --ink: #18181b;
+  --paper: #fafafa;
+  --surface: #ffffff;
+  --line: #e4e4e7;
+  --brand: #047857;
+  --brand-press: #065f46;
+  --mint: #10b981;
+  --highlight: #d1fae5;
+  --danger: #dc2626;
+  --warning: #b45309;
+
+  --background: #fafafa;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --primary: #047857;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #ecfdf5;
+  --accent-foreground: #047857;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e4e4e7;
+  --input: #d4d4d8;
+  --ring: #10b981;
+
+  /* permukaan datar: bayangan tipis menggantikan bayangan tinta */
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-3: 0 6px 18px rgb(0 0 0 / 0.1);
+
+  /* indikator menu aktif (emerald pekat agar lolos kontras 4.5:1) */
+  --nav-active-bg: #ecfdf5;
+  --nav-active-fg: #047857;
+  --nav-active-dot: #10b981;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"]:has([data-shell="pahamin"]) {
+  /* warna — mode gelap (utama menurut spesifikasi) */
+  --ink: #f4f4f5;
+  --paper: #09090b;
+  --surface: #18181b;
+  --line: #27272a;
+  --brand: #34d399;
+  --brand-press: #6ee7b7;
+  --mint: #34d399;
+  --highlight: #064e3b;
+  --danger: #f87171;
+  --warning: #fbbf24;
+
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  --card: rgb(24 24 27 / 0.6);
+  --card-foreground: #f4f4f5;
+  --primary: #10b981;
+  --primary-foreground: #022c22;
+  --secondary: #27272a;
+  --secondary-foreground: #f4f4f5;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --accent: rgb(16 185 129 / 0.12);
+  --accent-foreground: #34d399;
+  --border: #27272a;
+  --input: #3f3f46;
+  --ring: #34d399;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.5);
+  --shadow-2: 0 1px 2px rgb(0 0 0 / 0.5);
+  --shadow-3: 0 8px 24px rgb(0 0 0 / 0.55);
+
+  --nav-active-bg: rgb(16 185 129 / 0.14);
+  --nav-active-fg: #34d399;
+  --nav-active-dot: #10b981;
+
+  color-scheme: dark;
+}
+
+/* ── Pemakaian ulang komponen bersama di dalam skop: garis 1px, permukaan
+   datar, tanpa translate saat hover/active. Aturan tanpa layer selalu
+   menang atas utilitas Tailwind yang berada di @layer utilities. ── */
+[data-shell="pahamin"] .border-2 {
+  border-width: 1px;
+}
+
+[data-shell="pahamin"] .border-ink {
+  border-color: var(--line);
+}
+
+[data-shell="pahamin"] :is(.shadow-1, .shadow-2) {
+  --tw-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+[data-shell="pahamin"] .shadow-3 {
+  --tw-shadow: 0 6px 18px rgb(0 0 0 / 0.1);
+}
+
+:root[data-theme="dark"] [data-shell="pahamin"] :is(.shadow-1, .shadow-2) {
+  --tw-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+}
+
+:root[data-theme="dark"] [data-shell="pahamin"] .shadow-3 {
+  --tw-shadow: 0 8px 24px rgb(0 0 0 / 0.55);
+}
+
+[data-shell="pahamin"] :is(.sticker, .sticker-1, .sticky-note, .flip-face) {
+  border-width: 1px;
+}
+
+[data-shell="pahamin"] :is(a, button):is(:hover, :active) {
+  transform: none;
+}
+
+/* ── Item navigasi sidebar ── */
+[data-shell="pahamin"] .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--r-pill);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  transition:
+    background-color 150ms var(--ease),
+    color 150ms var(--ease);
+}
+
+[data-shell="pahamin"] .nav-item:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+[data-shell="pahamin"] .nav-item[aria-current="page"] {
+  background: var(--nav-active-bg);
+  color: var(--nav-active-fg);
+}
+
+[data-shell="pahamin"] .nav-item[data-soon] {
+  cursor: default;
+}
+
+[data-shell="pahamin"] .nav-item[data-soon]:hover {
+  background: transparent;
+  color: var(--muted-foreground);
+}
+
+/* titik indikator: hanya menyala pada menu aktif */
+[data-shell="pahamin"] .nav-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  flex: none;
+  border-radius: 999px;
+  background: transparent;
+}
+
+[data-shell="pahamin"] .nav-item[aria-current="page"] .nav-dot {
+  background: var(--nav-active-dot);
+}
+
+/* label grup: UTAMA / AKTIVITAS / AKUN */
+[data-shell="pahamin"] .nav-group {
+  padding: 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

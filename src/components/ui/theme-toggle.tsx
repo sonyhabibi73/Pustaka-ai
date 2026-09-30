@@ -4,7 +4,7 @@ import { Moon, Sun } from "lucide-react";
 import { useSyncExternalStore } from "react";
 
 /**
- * Mode gelap mengikuti sistem, dengan pilihan manual (Desain.md §7).
+ * Mode gelap bawaan situs, dengan pilihan manual (Desain.md §7).
  * Nilai disimpan di atribut <html data-theme> dan localStorage "theme",
  * sehingga tidak ada kedip saat muat ulang (lihat theme-init di root layout).
  */
@@ -27,7 +27,7 @@ function getSnapshot() {
 }
 
 function getServerSnapshot() {
-  return "light";
+  return "dark";
 }
 
 export function ThemeToggle({ className }: { className?: string }) {

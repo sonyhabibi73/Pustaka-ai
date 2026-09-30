@@ -30,16 +30,22 @@ export const viewport: Viewport = {
   ],
 };
 
-/** Terapkan tema sebelum paint pertama supaya tidak ada kedip mode terang. */
+/** Terapkan tema sebelum paint pertama supaya tidak ada kedip mode terang.
+ *  Bawaan situs: gelap. Pengguna masih bisa memilih terang / gelap / ikut
+ *  sistem di Pengaturan → Tampilan (tersimpan di localStorage "theme"). */
 const themeInit = `
 (function () {
   try {
     var stored = localStorage.getItem("theme");
     var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var theme = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
+    var theme =
+      stored === "system"
+        ? prefersDark ? "dark" : "light"
+        : stored === "light" ? "light"
+        : "dark";
     document.documentElement.setAttribute("data-theme", theme);
   } catch (e) {
-    document.documentElement.setAttribute("data-theme", "light");
+    document.documentElement.setAttribute("data-theme", "dark");
   }
 })();
 `;

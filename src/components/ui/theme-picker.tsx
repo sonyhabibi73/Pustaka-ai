@@ -15,20 +15,20 @@ const options: { id: Choice; label: string; hint: string }[] = [
 function readChoice(): Choice {
   try {
     const stored = localStorage.getItem("theme");
-    return stored === "light" || stored === "dark" ? stored : "system";
+    return stored === "light" || stored === "dark" || stored === "system" ? stored : "dark";
   } catch {
-    return "system";
+    return "dark";
   }
 }
 
 /**
- * Pilihan tema tiga opsi di halaman Pengaturan. Nilai disimpan di
- * localStorage "theme" dan langsung mengubah atribut <html data-theme>,
- * sama seperti ThemeToggle — "Ikut sistem" menghapus penyimpanan sehingga
- * theme-init di root layout kembali membaca preferensi perangkat.
+ * Pilihan tema tiga opsi di halaman Pengaturan. Bawaannya gelap; nilai
+ * disimpan di localStorage "theme" dan langsung mengubah atribut
+ * <html data-theme>, sama seperti ThemeToggle. "Ikut sistem" disimpan sebagai
+ * "system" sehingga theme-init di root layout mengikuti preferensi perangkat.
  */
 export function ThemePicker() {
-  const [choice, setChoice] = useState<Choice>("system");
+  const [choice, setChoice] = useState<Choice>("dark");
 
   useEffect(() => {
     const sync = () => setChoice(readChoice());
@@ -49,22 +49,19 @@ export function ThemePicker() {
 
   function pick(next: Choice) {
     const root = document.documentElement;
+    // "system" tetap disimpan agar pengaturan menampilkan pilihan yang benar
+    // (theme-init di root layout membaca nilai ini saat muat halaman).
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      /* penyimpanan tidak tersedia: tema tetap berlaku untuk sesi ini */
+    }
     if (next === "system") {
-      try {
-        localStorage.removeItem("theme");
-      } catch {
-        /* penyimpanan tidak tersedia */
-      }
       root.setAttribute(
         "data-theme",
         window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
       );
     } else {
-      try {
-        localStorage.setItem("theme", next);
-      } catch {
-        /* penyimpanan tidak tersedia: tema tetap berlaku untuk sesi ini */
-      }
       root.setAttribute("data-theme", next);
     }
     setChoice(next);
